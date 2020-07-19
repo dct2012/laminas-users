@@ -1,0 +1,67 @@
+<?php
+
+use User\Form\SignupForm;
+use User\Model\User;
+
+$title = 'User Info';
+$this->headTitle( $title );
+
+/* @var SignupForm $Form */
+/* @var User $User */
+
+$userID   = $Form->get( 'id' )
+                 ->setAttribute( 'class', 'form-control' )
+                 ->setAttribute( 'placeholder', 'ID' )
+                 ->setAttribute( 'readonly', true )
+                 ->setValue( $User->getId() );
+$userName = $Form->get( 'username' )
+                 ->setAttribute( 'class', 'form-control' )
+                 ->setAttribute( 'placeholder', 'Username' )
+                 ->setAttribute( 'readonly', true )
+                 ->setValue( $User->getUserName() );
+
+$Form->prepare();
+
+?>
+<div class="card">
+    <div class="card-header">
+        <h1><?= $title ?></h1>
+    </div>
+    <div class="card-body">
+		<?= $this->form()->openTag( $Form ); ?>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-2">
+					<?= $this->formLabel( $userID ) ?>
+                </div>
+                <div class="col-10">
+					<?= $this->formElement( $userID ) ?>
+					<?= $this->formElementErrors()->render( $userID, [ 'class' => 'help-block' ] ) ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-2">
+					<?= $this->formLabel( $userName ) ?>
+                </div>
+                <div class="col-10">
+					<?= $this->formElement( $userName ) ?>
+					<?= $this->formElementErrors()->render( $userName, [ 'class' => 'help-block' ] ) ?>
+                </div>
+            </div>
+        </div>
+		<?= $this->form()->closeTag() ?>
+    </div>
+    <div class="card-footer text-muted">
+        <div class="row">
+            <div class="col-6 text-left">
+                <a href="/user/update">Change Password</a>
+            </div>
+            <div class="col-6 text-right">
+                <a href="/user/delete" class="text-danger">Delete User</a>
+            </div>
+        </div>
+    </div>
+</div>

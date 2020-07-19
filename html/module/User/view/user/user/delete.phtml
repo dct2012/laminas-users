@@ -1,0 +1,60 @@
+<?php
+
+use User\Form\DeleteForm;
+use User\Model\User;
+
+$title = 'Delete User';
+$this->headTitle( $title );
+
+/* @var DeleteForm $Form */
+/* @var User $User */
+
+$password = $Form->get( 'password' )
+                 ->setAttribute( 'class', 'form-control' )
+                 ->setAttribute( 'required', true )
+                 ->setAttribute( 'placeholder', 'Current Password' );
+
+$submit = $Form->get( 'delete' )
+               ->setAttribute( 'class', 'btn btn-danger' );
+
+$Form->setAttribute( 'action', $this->url( 'user/delete', [ 'action' => 'index' ] ) )
+     ->setAttribute( 'method', 'post' )
+     ->setAttribute( 'autocomplete', 'off' )
+     ->prepare();
+
+?>
+<div class="card">
+    <div class="card-header">
+        <h1><?= $title ?></h1>
+    </div>
+    <div class="card-body">
+		<?= $this->form()->openTag( $Form ) ?>
+        <div class="alert alert-danger">
+            If you are sure you want to delete your user, enter your password and click Delete.
+        </div>
+        <hr>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-2">
+					<?= $this->formLabel( $password ) ?>
+                </div>
+                <div class="col-10">
+					<?= $this->formElement( $password ) ?>
+					<?= $this->formElementErrors()->render( $password, [ 'class' => 'help-block' ] ) ?>
+                </div>
+            </div>
+        </div>
+
+		<?= $this->formElement( $Form->get( 'security' ) ) ?>
+
+        <div class="text-right">
+			<?php
+			echo $this->formSubmit( $submit );
+			echo $this->formHidden( $Form->get( 'id' )->setValue( $User->getId() ) );
+			echo $this->formHidden( $Form->get( 'username' )->setValue( $User->getUserName() ) );
+			?>
+        </div>
+		<?= $this->form()->closeTag() ?>
+    </div>
+</div>
