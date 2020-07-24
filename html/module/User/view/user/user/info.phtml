@@ -9,16 +9,26 @@ $this->headTitle( $title );
 /* @var SignupForm $Form */
 /* @var User $User */
 
-$userID   = $Form->get( 'id' )
-                 ->setAttribute( 'class', 'form-control' )
-                 ->setAttribute( 'placeholder', 'ID' )
-                 ->setAttribute( 'readonly', true )
-                 ->setValue( $User->getId() );
-$userName = $Form->get( 'username' )
-                 ->setAttribute( 'class', 'form-control' )
-                 ->setAttribute( 'placeholder', 'Username' )
-                 ->setAttribute( 'readonly', true )
-                 ->setValue( $User->getUserName() );
+$userID    = $Form->get( 'id' )
+                  ->setAttribute( 'class', 'form-control' )
+                  ->setAttribute( 'placeholder', 'ID' )
+                  ->setAttribute( 'readonly', true )
+                  ->setValue( $User->getId() );
+$userName  = $Form->get( 'username' )
+                  ->setAttribute( 'class', 'form-control' )
+                  ->setAttribute( 'placeholder', 'Username' )
+                  ->setAttribute( 'readonly', true )
+                  ->setValue( $User->getUserName() );
+$updateOn  = $Form->get( 'updated_on' )
+                  ->setAttribute( 'class', 'form-control' )
+                  ->setAttribute( 'placeholder', 'date' )
+                  ->setAttribute( 'readonly', true )
+                  ->setValue( $User->getUpdatedOn() );
+$createdOn = $Form->get( 'created_on' )
+                  ->setAttribute( 'class', 'form-control' )
+                  ->setAttribute( 'placeholder', 'date' )
+                  ->setAttribute( 'readonly', true )
+q                  ->setValue( $User->getCreatedOn() );
 
 $Form->prepare();
 
@@ -49,6 +59,30 @@ $Form->prepare();
                 <div class="col-10">
 					<?= $this->formElement( $userName ) ?>
 					<?= $this->formElementErrors()->render( $userName, [ 'class' => 'help-block' ] ) ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-2">
+					<?= $this->formLabel( $updateOn ) ?>
+                </div>
+                <div class="col-10">
+					<?= $this->formElement( $updateOn ) ?>
+					<?= $this->formElementErrors()->render( $updateOn, [ 'class' => 'help-block' ] ) ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-2">
+					<?= $this->formLabel( $createdOn ) ?>
+                </div>
+                <div class="col-10">
+					<?= $this->formElement( $createdOn ) ?>
+					<?= $this->formElementErrors()->render( $createdOn, [ 'class' => 'help-block' ] ) ?>
                 </div>
             </div>
         </div>

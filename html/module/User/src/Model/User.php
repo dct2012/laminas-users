@@ -9,16 +9,24 @@ class User {
 	private string $username;
 	/* @var string */
 	private string $password;
+	/* @var mixed */
+	private $updated_on;
+	/* @var mixed */
+	private $created_on;
 
 	/**
 	 * @param string $username
 	 * @param string $password
 	 * @param int|null $id
+	 * @param ?string $updated_on
+	 * @param ?string $created_on
 	 */
-	public function __construct( string $username, string $password, $id = null ) {
-		$this->username = $username;
-		$this->password = $password;
-		$this->id       = $id;
+	public function __construct( string $username, string $password, $id = null, $updated_on = null, $created_on = null ) {
+		$this->username   = $username;
+		$this->password   = $password;
+		$this->updated_on = $updated_on;
+		$this->created_on = $created_on;
+		$this->id         = $id;
 	}
 
 	/* @return mixed */
@@ -34,6 +42,16 @@ class User {
 	/* @return string */
 	public function getPassword(): string {
 		return $this->password;
+	}
+
+	/* @return string */
+	public function getUpdatedOn(): string {
+		return $this->updated_on;
+	}
+
+	/* @return string */
+	public function getCreatedOn(): string {
+		return $this->created_on;
 	}
 
 	/**

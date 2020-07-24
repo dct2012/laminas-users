@@ -52,7 +52,7 @@ class UserCommand {
 	 */
 	public function read( User $User ): User {
 		$Select = ( new Select( 'users' ) )
-			->columns( [ 'id', 'username', 'password' ] )
+			->columns( [ 'id', 'username', 'password', 'updated_on', 'created_on' ] )
 			->where( [ 'username' => $User->getUserName() ] );
 
 		$Result = ( new Sql( $this->db ) )

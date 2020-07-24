@@ -176,7 +176,7 @@ class UserController extends AbstractActionController {
 		$this->init( InfoForm::class );
 
 		return $this->ensureLoggedIn( 'user/login', 'You have to be logged in to view user info!' )
-			?? new ViewModel( [ 'Form' => $this->Form, 'User' => $this->AS->getIdentity() ] );
+			?? new ViewModel( [ 'Form' => $this->Form, 'User' => $this->Command->read( $this->AS->getIdentity() ) ] );
 	}
 
 	/** @return Response|ViewModel */

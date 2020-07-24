@@ -22,7 +22,25 @@ class InfoForm extends Form {
 				'name'    => 'username',
 				'type'    => 'text',
 				'options' => [
-					'label' => 'Username',
+					'label' => 'Username:',
+				],
+			]
+		);
+		$this->add(
+			[
+				'name'    => 'updated_on',
+				'type'    => 'text',
+				'options' => [
+					'label' => 'Last Updated:',
+				],
+			]
+		);
+		$this->add(
+			[
+				'name'    => 'created_on',
+				'type'    => 'text',
+				'options' => [
+					'label' => 'Created On:',
 				],
 			]
 		);
