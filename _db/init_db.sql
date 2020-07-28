@@ -1,15 +1,26 @@
 DROP TABLE IF EXISTS `users`;
-/*!40101 SET @saved_cs_client = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users`
 (
-    `id`         int(11)     NOT NULL AUTO_INCREMENT,
-    `username`   varchar(50) NOT NULL,
-    `password`   varchar(255)         DEFAULT NULL,
-    `updated_on` timestamp   NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-    `created_on` timestamp   NOT NULL DEFAULT current_timestamp(),
+    `id`         int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `username`   varchar(50)      NOT NULL,
+    `password`   varchar(255)              DEFAULT NULL,
+    `updated_on` timestamp        NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+    `created_on` timestamp        NOT NULL DEFAULT current_timestamp(),
     PRIMARY KEY (`id`),
     UNIQUE KEY `username` (`username`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `user_logins`;
+CREATE TABLE `user_logins`
+(
+    `id`         int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `user_id`    int(10) unsigned NOT NULL,
+    `ip_address` varchar(100)     NOT NULL,
+    `device`     varchar(100)     NOT NULL,
+    `login_time` time             NOT NULL DEFAULT current_timestamp(),
+    PRIMARY KEY (`id`),
+    KEY `user_logins_FK` (`user_id`),
+    CONSTRAINT `user_logins_FK` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
