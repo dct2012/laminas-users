@@ -1,4 +1,11 @@
+Options -MultiViews -Indexes
+
 RewriteEngine On
+
+# Redirect to non-trailing slash
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} /(.*)/$
+RewriteRule ^ /%1 [R=301,L]
 
 # The following rule tells Apache that if the requested filename
 # exists, simply serve it.
