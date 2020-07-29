@@ -7,7 +7,9 @@ use User\Model\User;
 use User\Command\UserCommand;
 use User\Form\{DeleteForm, InfoForm, LoginForm, LogoutForm, SignupForm, UpdateForm};
 use UserLogin\Model\UserLogin;
+use PageVisit\Model\PageVisit;
 use UserLogin\Command\UserLoginCommand;
+use PageVisit\Command\PageVisitCommand;
 use UserLogin\Enum\UserLoginFields as ULFs;
 use Laminas\Form\Form;
 use Laminas\View\Model\ViewModel;
@@ -18,6 +20,7 @@ use Laminas\Authentication\Adapter\AbstractAdapter;
 use Laminas\Mvc\Plugin\Identity\Identity;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
+use Application\Exceptions\DbOperationHadNoAffectException;
 use Laminas\Form\FormElementManager\FormElementManagerV3Polyfill as FormManager;
 
 class UserController extends AbstractActionController {
@@ -25,6 +28,8 @@ class UserController extends AbstractActionController {
 	protected Form $Form;
 	/** @var Request */
 	protected Request $Request;
+	/** @var PageVisitCommand */
+	protected PageVisitCommand $PageVisitCommand;
 	/** @var FlashMessenger */
 	protected FlashMessenger $FM;
 	/** @var Identity */
@@ -49,11 +54,13 @@ class UserController extends AbstractActionController {
 	 * @param UserCommand      $UserCommand
 	 * @param UserLoginCommand $UserLoginCommand
 	 * @param FormManager      $FormManager
+	 * @param PageVisitCommand $PageVisitCommand
 	 */
-	public function __construct( UserCommand $UserCommand, UserLoginCommand $UserLoginCommand, FormManager $FormManager ) {
+	public function __construct( UserCommand $UserCommand, UserLoginCommand $UserLoginCommand, FormManager $FormManager, PageVisitCommand $PageVisitCommand ) {
 		$this->UserCommand      = $UserCommand;
 		$this->UserLoginCommand = $UserLoginCommand;
 		$this->FormManager      = $FormManager;
+		$this->PageVisitCommand = $PageVisitCommand;
 
 		$this->ipAddress = $_SERVER[ 'REMOTE_ADDR' ];
 		$this->device    = $_SERVER[ 'HTTP_USER_AGENT' ];
@@ -221,6 +228,8 @@ class UserController extends AbstractActionController {
 			$UserLogins = [ $UserLogins ];
 		}
 
+		$this->PageVisitCommand->create( new PageVisit( 'user', $_SERVER[ 'REMOTE_ADDR' ], $_SERVER[ 'HTTP_USER_AGENT' ], $User->getId() ) );
+
 		return new ViewModel( [ 'Form' => $this->Form, 'User' => $User, 'UserLogins' => $UserLogins ] );
 	}
 
@@ -234,6 +243,8 @@ class UserController extends AbstractActionController {
 		}
 
 		if( !$this->Request->isPost() ) {
+			$this->PageVisitCommand->create( new PageVisit( 'user/signup', $_SERVER[ 'REMOTE_ADDR' ], $_SERVER[ 'HTTP_USER_AGENT' ] ) );
+
 			return new ViewModel( [ 'Form' => $this->Form ] );
 		}
 
@@ -278,6 +289,8 @@ class UserController extends AbstractActionController {
 		/* @var User $User */
 		$User = $this->AS->getIdentity();
 		if( !$this->Request->isPost() ) {
+			$this->PageVisitCommand->create( new PageVisit( 'user/update', $_SERVER[ 'REMOTE_ADDR' ], $_SERVER[ 'HTTP_USER_AGENT' ], $User->getId() ) );
+
 			return new ViewModel( [ 'Form' => $this->Form, 'User' => $User ] );
 		}
 
@@ -366,6 +379,8 @@ class UserController extends AbstractActionController {
 		}
 
 		if( !$this->Request->isPost() ) {
+			$this->PageVisitCommand->create( new PageVisit( 'user/login', $_SERVER[ 'REMOTE_ADDR' ], $_SERVER[ 'HTTP_USER_AGENT' ] ) );
+
 			return new ViewModel( [ 'Form' => $this->Form ] );
 		}
 
@@ -383,7 +398,11 @@ class UserController extends AbstractActionController {
 		$User      = $this->UserCommand->read( $User );
 		$UserLogin = new UserLogin( $User->getId(), $this->ipAddress, $this->device );
 
-		$this->UserLoginCommand->update( $UserLogin, [], [ ULFs::USER_ID => $User->getId(), ULFs::LOGOUT_TIME => null ] );
+		try {
+			$this->UserLoginCommand->update( $UserLogin, [], [ ULFs::USER_ID => $User->getId(), ULFs::LOGOUT_TIME => null ] );
+		} catch( DbOperationHadNoAffectException $e ) {
+			// It's ok if there's nothing to update
+		}
 		$this->UserLoginCommand->create( $UserLogin );
 		$this->AS->getStorage()->write( $User );
 		$this->FM->addSuccessMessage( 'Successfully Logged In.' );
@@ -400,9 +419,12 @@ class UserController extends AbstractActionController {
 			return $Response;
 		}
 
+		/** @var User $User */
 		$User = $this->AS->getIdentity();
 		if( !$this->Request->isPost() ) {
-			return new ViewModel( [ 'Form' => $this->Form, 'User' => $User ] );
+			$this->PageVisitCommand->create( new PageVisit( 'user/delete', $_SERVER[ 'REMOTE_ADDR' ], $_SERVER[ 'HTTP_USER_AGENT' ], $User->getId() ) );
+
+			return new ViewModel( [ 'Form' => $this->Form, 'User' => $User, 'PageVisit' ] );
 		}
 
 		$Response = $this->validateForm();

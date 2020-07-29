@@ -1,13 +1,16 @@
 <?php
 
-use User\Form\DeleteForm;
 use User\Model\User;
+use User\Form\DeleteForm;
+use Laminas\View\Renderer\PhpRenderer;
+use Laminas\Form\View\HelperTrait;
+
+/** @var PhpRenderer|HelperTrait $this */
+/** @var DeleteForm $Form */
+/** @var User $User */
 
 $title = 'Delete User';
 $this->headTitle( $title );
-
-/* @var DeleteForm $Form */
-/* @var User $User */
 
 $password = $Form->get( 'password' )
                  ->setAttribute( 'class', 'form-control toggle-password' )
@@ -52,5 +55,4 @@ $Form->setAttribute( 'action', $this->url( 'user/delete', [ 'action' => 'index' 
 			<?= $this->form()->closeTag() ?>
         </div>
     </div>
-
 <?= $this->inlineScript()->prependFile( $this->basePath( 'js/togglePassword.js' ) ) ?>

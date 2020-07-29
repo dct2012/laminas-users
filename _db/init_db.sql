@@ -1,3 +1,18 @@
+DROP TABLE IF EXISTS `page_visits`;
+CREATE TABLE `page_visits`
+(
+    `id`         int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `page`       varchar(100)     NOT NULL,
+    `user_id`    int(10) unsigned          DEFAULT NULL,
+    `ip_address` varchar(15)      NOT NULL,
+    `device`     varchar(255)     NOT NULL,
+    `visit_time` timestamp        NOT NULL DEFAULT current_timestamp(),
+    PRIMARY KEY (`id`),
+    KEY `page_visits_FK` (`user_id`),
+    CONSTRAINT `page_visits_FK` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
 DROP TABLE IF EXISTS `user_logins`;
 CREATE TABLE `user_logins`
 (

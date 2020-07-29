@@ -28,14 +28,16 @@
     "psr-4": {
       "Application\\": "module/Application/src/",
       "UserLogin\\": "module/UserLogin/src/",
-      "User\\": "module/User/src/"
+      "User\\": "module/User/src/",
+      "PageVisit\\": "module/PageVisit/src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
       "ApplicationTest\\": "module/Application/test/",
       "UserLoginTest\\": "module/UserLogin/test/",
-      "UserTest\\": "module/User/test/"
+      "UserTest\\": "module/User/test/",
+      "PageVisitTest\\": "module/PageVisit/test/"
     }
   },
   "scripts": {

@@ -1,11 +1,15 @@
 <?php
 
 use User\Form\InfoForm;
+use Laminas\Form\View\HelperTrait;
+use Laminas\View\Renderer\PhpRenderer;
+
+/** @var PhpRenderer|HelperTrait $this */
+/** @var InfoForm $Form */
 
 $title = 'Login';
 $this->headTitle( $title );
 
-/* @var InfoForm $Form */
 $userName = $Form->get( 'username' )
                  ->setAttribute( 'class', 'form-control' )
                  ->setAttribute( 'required', true )
@@ -42,7 +46,7 @@ $Form->setAttribute( 'action', $this->url( 'user/login', [ 'action' => 'index' ]
 				<?= $this->formElementErrors()->render( $password, [ 'class' => 'help-block' ] ) ?>
             </div>
 
-	        <?= $this->partial( 'partial/togglepasswordcheckbox' ) ?> Show Password
+			<?= $this->partial( 'partial/togglepasswordcheckbox' ) ?> Show Password
 
 			<?= $this->formElement( $Form->get( 'security' ) ) ?>
 
@@ -56,5 +60,4 @@ $Form->setAttribute( 'action', $this->url( 'user/login', [ 'action' => 'index' ]
             Don't have an account? <a href="/user/signup">Sign up</a>.
         </div>
     </div>
-
 <?= $this->inlineScript()->prependFile( $this->basePath( 'js/togglePassword.js' ) ) ?>

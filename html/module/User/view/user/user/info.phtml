@@ -1,15 +1,18 @@
 <?php
 
-use User\Form\SignupForm;
 use User\Model\User;
+use User\Form\SignupForm;
 use UserLogin\Model\UserLogin;
+use Laminas\Form\View\HelperTrait;
+use Laminas\View\Renderer\PhpRenderer;
+
+/** @var PhpRenderer|HelperTrait $this */
+/** @var User $User */
+/** @var SignupForm $Form */
+/** @var array $UserLogins */
 
 $title = 'User Info';
 $this->headTitle( $title );
-
-/* @var SignupForm $Form */
-/* @var User $User */
-/* @var array $UserLogins */
 
 $userID    = $Form->get( 'id' )
                   ->setAttribute( 'class', 'form-control' )

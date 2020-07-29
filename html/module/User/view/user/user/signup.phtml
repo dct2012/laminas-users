@@ -1,11 +1,15 @@
 <?php
 
 use User\Form\SignupForm;
+use Laminas\Form\View\HelperTrait;
+use Laminas\View\Renderer\PhpRenderer;
+
+/** @var PhpRenderer|HelperTrait $this */
+/** @var SignupForm $Form */
 
 $title = 'Sign Up';
 $this->headTitle( $title );
 
-/* @var SignupForm $Form */
 $userName = $Form->get( 'username' )
                  ->setAttribute( 'class', 'form-control' )
                  ->setAttribute( 'required', true )
@@ -74,5 +78,4 @@ $Form->setAttribute( 'action', $this->url( 'user/signup', [ 'action' => 'index' 
             Already have a account? <a href="/user/login">Login</a>.
         </div>
     </div>
-
 <?= $this->inlineScript()->prependFile( $this->basePath( 'js/togglePassword.js' ) ) ?>

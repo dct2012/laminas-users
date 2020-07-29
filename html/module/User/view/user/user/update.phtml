@@ -1,10 +1,13 @@
 <?php
 
-use User\Form\UpdateForm;
 use User\Model\User;
+use User\Form\UpdateForm;
+use Laminas\Form\View\HelperTrait;
+use Laminas\View\Renderer\PhpRenderer;
 
-/* @var UpdateForm $Form */
-/* @var User $User */
+/** @var PhpRenderer|HelperTrait $this */
+/** @var UpdateForm $Form */
+/** @var User $User */
 
 $title = 'Update Password';
 $this->headTitle( $title );
@@ -75,5 +78,4 @@ $Form->setAttribute( 'action', $this->url( 'user/update', [ 'action' => 'index' 
 			<?= $this->form()->closeTag() ?>
         </div>
     </div>
-
 <?= $this->inlineScript()->prependFile( $this->basePath( 'js/togglePassword.js' ) ) ?>

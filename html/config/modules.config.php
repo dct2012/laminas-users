@@ -21,4 +21,5 @@ return [
 	'Application',
 	'UserLogin',
 	'User',
+	'PageVisit',
 ];
