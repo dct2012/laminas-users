@@ -11,3 +11,7 @@ Usage
 
 1. Take your instance down: \
 ```$ docker-compose down```
+
+Considerations
+----
+1. https://icon-icons.com/ for our favicon.ico
