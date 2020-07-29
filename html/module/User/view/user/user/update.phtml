@@ -68,11 +68,9 @@ $Form->setAttribute( 'action', $this->url( 'user/update', [ 'action' => 'index' 
 			<?= $this->formElement( $Form->get( 'security' ) ) ?>
 
             <div class="text-right">
-				<?php
-				echo $this->formSubmit( $submit );
-				echo $this->formHidden( $Form->get( 'id' )->setValue( $User->getId() ) );
-				echo $this->formHidden( $Form->get( 'username' )->setValue( $User->getUserName() ) );
-				?>
+				<?= $this->formSubmit( $submit ) ?>
+				<?= $this->formHidden( $Form->get( 'id' )->setValue( $User->getId() ) ) ?>
+				<?= $this->formHidden( $Form->get( 'username' )->setValue( $User->getUserName() ) ) ?>
             </div>
 			<?= $this->form()->closeTag() ?>
         </div>
