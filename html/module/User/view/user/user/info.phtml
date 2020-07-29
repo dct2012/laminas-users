@@ -2,12 +2,14 @@
 
 use User\Form\SignupForm;
 use User\Model\User;
+use UserLogin\Model\UserLogin;
 
 $title = 'User Info';
 $this->headTitle( $title );
 
 /* @var SignupForm $Form */
 /* @var User $User */
+/* @var array $UserLogins */
 
 $userID    = $Form->get( 'id' )
                   ->setAttribute( 'class', 'form-control' )
@@ -40,53 +42,71 @@ $Form->prepare();
     <div class="card-body">
 		<?= $this->form()->openTag( $Form ); ?>
         <div class="form-group">
-            <div class="row">
-                <div class="col-2">
-					<?= $this->formLabel( $userID ) ?>
-                </div>
-                <div class="col-10">
-					<?= $this->formElement( $userID ) ?>
-					<?= $this->formElementErrors()->render( $userID, [ 'class' => 'help-block' ] ) ?>
-                </div>
-            </div>
+			<?= $this->formLabel( $userID ) ?>
+			<?= $this->formElement( $userID ) ?>
+			<?= $this->formElementErrors()->render( $userID, [ 'class' => 'help-block' ] ) ?>
         </div>
 
         <div class="form-group">
-            <div class="row">
-                <div class="col-2">
-					<?= $this->formLabel( $userName ) ?>
-                </div>
-                <div class="col-10">
-					<?= $this->formElement( $userName ) ?>
-					<?= $this->formElementErrors()->render( $userName, [ 'class' => 'help-block' ] ) ?>
-                </div>
-            </div>
+			<?= $this->formLabel( $userName ) ?>
+			<?= $this->formElement( $userName ) ?>
+			<?= $this->formElementErrors()->render( $userName, [ 'class' => 'help-block' ] ) ?>
         </div>
 
         <div class="form-group">
-            <div class="row">
-                <div class="col-2">
-					<?= $this->formLabel( $updateOn ) ?>
-                </div>
-                <div class="col-10">
-					<?= $this->formElement( $updateOn ) ?>
-					<?= $this->formElementErrors()->render( $updateOn, [ 'class' => 'help-block' ] ) ?>
-                </div>
-            </div>
+			<?= $this->formLabel( $updateOn ) ?>
+			<?= $this->formElement( $updateOn ) ?>
+			<?= $this->formElementErrors()->render( $updateOn, [ 'class' => 'help-block' ] ) ?>
         </div>
 
         <div class="form-group">
-            <div class="row">
-                <div class="col-2">
-					<?= $this->formLabel( $createdOn ) ?>
-                </div>
-                <div class="col-10">
-					<?= $this->formElement( $createdOn ) ?>
-					<?= $this->formElementErrors()->render( $createdOn, [ 'class' => 'help-block' ] ) ?>
-                </div>
-            </div>
+			<?= $this->formLabel( $createdOn ) ?>
+			<?= $this->formElement( $createdOn ) ?>
+			<?= $this->formElementErrors()->render( $createdOn, [ 'class' => 'help-block' ] ) ?>
         </div>
 		<?= $this->form()->closeTag() ?>
+
+		<?php if( !empty( $UserLogins ) ) { ?>
+            <hr>
+            <h5 class="card-title">Logins:</h5>
+
+            <div class="accordion" id="user-logins-accordian">
+				<?php
+				/* @var UserLogin $UserLogin */
+				foreach( $UserLogins as $UserLogin ) {
+					$id           = $UserLogin->getId();
+					$cardHeaderId = "heading{$id}";
+					$collapseId   = "collapse{$id}";
+					$ipId         = "ip{$id}";
+					$deviceId     = "device{$id}";
+
+					?>
+                    <div class="card">
+                        <div class="card-header" id="<?= $cardHeaderId ?>">
+                            <div class="mb-0">
+                                Login Time:
+                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#<?= $collapseId ?>" aria-expanded="true" aria-controls="<?= $collapseId ?>">
+									<?= $UserLogin->getLoginTime() ?>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="<?= $collapseId ?>" class="collapse" aria-labelledby="<?= $cardHeaderId ?>" data-parent="#user-logins-accordian">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="<?= $ipId ?>">IP Address:</label>
+                                    <input type="text" id="<?= $ipId ?>" name="<?= $ipId ?>" class="form-control" placeholder="127.0.0.1" readonly="readonly" value="<?= $UserLogin->getIpAddress() ?>">
+                                </div>
+                                <div class="form-group">
+                                    <label for="<?= $deviceId ?>">Device:</label>
+                                    <input type="text" id="<?= $deviceId ?>" name="<?= $deviceId ?>" class="form-control" placeholder="Chrome" readonly="readonly" value="<?= $UserLogin->getDevice() ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+				<?php } ?>
+            </div>
+		<?php } ?>
     </div>
     <div class="card-footer text-muted">
         <div class="row">

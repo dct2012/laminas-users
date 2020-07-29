@@ -37,9 +37,9 @@ class UserLoginCommand extends AbstractCommand {
 	 * @param ModelInterface $UserLogin
 	 * @param array          $where
 	 *
-	 * @return ModelInterface
+	 * @return ModelInterface|array
 	 */
-	public function read( ModelInterface $UserLogin, array $where = [] ): ModelInterface {
+	public function read( ModelInterface $UserLogin, array $where = [] ) {
 		return parent::read( $UserLogin, empty( $where )
 			? [ ULFs::ID => $UserLogin->getId() ]
 			: $where );

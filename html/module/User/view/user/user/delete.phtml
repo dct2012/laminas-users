@@ -35,15 +35,9 @@ $Form->setAttribute( 'action', $this->url( 'user/delete', [ 'action' => 'index' 
         <hr>
 
         <div class="form-group">
-            <div class="row">
-                <div class="col-2">
-					<?= $this->formLabel( $password ) ?>
-                </div>
-                <div class="col-10">
-					<?= $this->formElement( $password ) ?>
-					<?= $this->formElementErrors()->render( $password, [ 'class' => 'help-block' ] ) ?>
-                </div>
-            </div>
+			<?= $this->formLabel( $password ) ?>
+			<?= $this->formElement( $password ) ?>
+			<?= $this->formElementErrors()->render( $password, [ 'class' => 'help-block' ] ) ?>
         </div>
 
 		<?= $this->formElement( $Form->get( 'security' ) ) ?>

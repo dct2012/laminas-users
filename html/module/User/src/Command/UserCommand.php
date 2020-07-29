@@ -48,9 +48,9 @@ class UserCommand extends AbstractCommand {
 	 * @param ModelInterface $User
 	 * @param array          $where
 	 *
-	 * @return ModelInterface
+	 * @return ModelInterface|array
 	 */
-	public function read( ModelInterface $User, array $where = [] ): ModelInterface {
+	public function read( ModelInterface $User, array $where = [] ) {
 		return parent::read( $User, empty( $where )
 			? [ UFs::USERNAME => $User->getUserName() ]
 			: $where );

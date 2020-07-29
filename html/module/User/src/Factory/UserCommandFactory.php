@@ -2,7 +2,7 @@
 
 namespace User\Factory;
 
-use User\Command\UserCommand as Command;
+use User\Command\UserCommand;
 use Interop\Container\ContainerInterface;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -13,9 +13,9 @@ class UserCommandFactory implements FactoryInterface {
 	 * @param string             $requestedName
 	 * @param ?array             $options
 	 *
-	 * @return object|Command
+	 * @return UserCommand
 	 */
 	public function __invoke( ContainerInterface $container, $requestedName, ?array $options = null ) {
-		return new Command( $container->get( AdapterInterface::class ) );
+		return new UserCommand( $container->get( AdapterInterface::class ) );
 	}
 }

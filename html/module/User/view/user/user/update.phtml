@@ -40,39 +40,27 @@ $Form->setAttribute( 'action', $this->url( 'user/update', [ 'action' => 'index' 
     <div class="card-body">
 		<?= $this->form()->openTag( $Form ) ?>
         <div class="form-group">
-            <div class="row">
-                <div class="col-2">
-					<?= $this->formLabel( $currentPassword ) ?>
-                </div>
-                <div class="col-10">
-					<?= $this->formElement( $currentPassword ) ?>
-					<?= $this->formElementErrors()->render( $currentPassword, [ 'class' => 'help-block' ] ) ?>
-                </div>
-            </div>
+			<?= $this->formLabel( $currentPassword ) ?>
+			<?= $this->formElement( $currentPassword ) ?>
+			<?= $this->formElementErrors()->render( $currentPassword, [ 'class' => 'help-block' ] ) ?>
         </div>
 
         <div class="form-group">
-            <div class="row">
-                <div class="col-2">
-					<?= $this->formLabel( $newPassword ) ?>
-                </div>
-                <div class="col-10">
-					<?= $this->formElement( $newPassword ) ?>
-					<?= $this->formElementErrors()->render( $newPassword, [ 'class' => 'help-block' ] ) ?>
-                </div>
-            </div>
+			<?= $this->formLabel( $newPassword ) ?>
+			<?= $this->formElement( $newPassword ) ?>
+			<?= $this->formElementErrors()->render( $newPassword, [ 'class' => 'help-block' ] ) ?>
+            <small id="newPasswordHelpBlock" class="form-text text-muted">
+                New password must be different than the current password. Password must be 8 to 100 characters.
+            </small>
         </div>
 
         <div class="form-group">
-            <div class="row">
-                <div class="col-2">
-					<?= $this->formLabel( $verifyNewPassword ) ?>
-                </div>
-                <div class="col-10">
-					<?= $this->formElement( $verifyNewPassword ) ?>
-					<?= $this->formElementErrors()->render( $verifyNewPassword, [ 'class' => 'help-block' ] ) ?>
-                </div>
-            </div>
+			<?= $this->formLabel( $verifyNewPassword ) ?>
+			<?= $this->formElement( $verifyNewPassword ) ?>
+			<?= $this->formElementErrors()->render( $verifyNewPassword, [ 'class' => 'help-block' ] ) ?>
+            <small id="verifyNewPasswordHelpBlock" class="form-text text-muted">
+                Re-enter new password.
+            </small>
         </div>
 
 		<?= $this->formElement( $Form->get( 'security' ) ) ?>

@@ -2,9 +2,7 @@
 
 namespace User\Form;
 
-use Laminas\Form\Form;
-
-class LogoutForm extends Form {
+class LogoutForm extends AbstractForm {
 	public function __construct() {
 		parent::__construct( 'logout' );
 

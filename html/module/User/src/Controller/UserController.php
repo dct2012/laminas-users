@@ -8,6 +8,7 @@ use User\Command\UserCommand;
 use User\Form\{DeleteForm, InfoForm, LoginForm, LogoutForm, SignupForm, UpdateForm};
 use UserLogin\Model\UserLogin;
 use UserLogin\Command\UserLoginCommand;
+use UserLogin\Enum\UserLoginFields as ULFs;
 use Laminas\Form\Form;
 use Laminas\View\Model\ViewModel;
 use Laminas\Http\{Request, Response};
@@ -208,8 +209,19 @@ class UserController extends AbstractActionController {
 	public function infoAction() {
 		$this->init( InfoForm::class );
 
-		return $this->ensureLoggedIn( 'user/login', 'You have to be logged in to view user info!' )
-			?? new ViewModel( [ 'Form' => $this->Form, 'User' => $this->UserCommand->read( $this->AS->getIdentity() ) ] );
+		$Response = $this->ensureLoggedIn( 'user/login', 'You have to be logged in to view user info!' );
+		if( !empty( $Response ) ) {
+			return $Response;
+		}
+
+		/* @var User $User */
+		$User       = $this->UserCommand->read( $this->AS->getIdentity() );
+		$UserLogins = $this->UserLoginCommand->read( new UserLogin( 0, '', '' ), [ ULFs::USER_ID => $User->getId() ] );
+		if( !is_array( $UserLogins ) ) {
+			$UserLogins = [ $UserLogins ];
+		}
+
+		return new ViewModel( [ 'Form' => $this->Form, 'User' => $User, 'UserLogins' => $UserLogins ] );
 	}
 
 	/** @return Response|ViewModel */

@@ -60,19 +60,21 @@ abstract class AbstractCommand {
 	 * @param ModelInterface $Model
 	 * @param array          $where
 	 *
-	 * @return ModelInterface
+	 * @return ModelInterface|array
 	 */
-	public function read( ModelInterface $Model, array $where = [] ): ModelInterface {
-		$Select = ( new Select( $this::getTableName() ) )
+	public function read( ModelInterface $Model, array $where = [] ) {
+		$Result = $this->executeSqlStatement( 'select', ( new Select( $this::getTableName() ) )
 			->columns( $this::getTableColumns() )
-			->where( $where );
+			->where( $where ) );
 
-		$Result = $this->executeSqlStatement( 'select', $Select );
-		foreach( ( new HydratingResultSet( new ReflectionHydrator(), $Model ) )->initialize( $Result ) as $u ) {
-			$Model = $u;
+		$models = [];
+		foreach( ( new HydratingResultSet( new ReflectionHydrator(), $Model ) )->initialize( $Result ) as $M ) {
+			$models[] = $M;
 		}
 
-		return $Model;
+		return count( $models ) == 1
+			? $models[ 0 ]
+			: $models;
 	}
 
 	/**

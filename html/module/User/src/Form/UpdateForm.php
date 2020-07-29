@@ -2,18 +2,12 @@
 
 namespace User\Form;
 
-use User\Model\User;
 use User\Enum\UserFields as UFs;
-use Laminas\Form\Form;
 use Laminas\Form\Element\Csrf;
-use Laminas\Hydrator\ReflectionHydrator;
 
-class UpdateForm extends Form {
+class UpdateForm extends AbstractForm {
 	public function __construct() {
 		parent::__construct( 'update' );
-
-		$this->setHydrator( new ReflectionHydrator() );
-		$this->setObject( new User( '', '' ) );
 
 		$this->add( [
 			'name' => UFs::ID,

@@ -5,16 +5,16 @@ namespace User\Model;
 use Application\Model\ModelInterface;
 
 class User implements ModelInterface {
-	/** @var mixed */
-	private $id;
+	/** @var ?int */
+	protected ?int $id;
 	/** @var string */
-	private string $username;
+	protected string $username;
 	/** @var string */
-	private string $password;
+	protected string $password;
 	/** @var ?string */
-	private ?string $updated_on;
+	protected ?string $updated_on;
 	/** @var ?string */
-	private ?string $created_on;
+	protected ?string $created_on;
 
 	/**
 	 * @param string  $username

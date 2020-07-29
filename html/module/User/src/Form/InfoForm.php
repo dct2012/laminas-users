@@ -2,10 +2,9 @@
 
 namespace User\Form;
 
-use Laminas\Form\Form;
 use User\Enum\UserFields as UFs;
 
-class InfoForm extends Form {
+class InfoForm extends AbstractForm {
 	public function __construct() {
 		parent::__construct( 'user' );
 

@@ -38,39 +38,27 @@ $Form->setAttribute( 'action', $this->url( 'user/signup', [ 'action' => 'index' 
 		<?php
 		echo $this->form()->openTag( $Form ); ?>
         <div class="form-group">
-            <div class="row">
-                <div class="col-2">
-					<?= $this->formLabel( $userName ) ?>
-                </div>
-                <div class="col-10">
-					<?= $this->formElement( $userName ) ?>
-					<?= $this->formElementErrors()->render( $userName, [ 'class' => 'help-block' ] ) ?>
-                </div>
-            </div>
+			<?= $this->formLabel( $userName ) ?>
+			<?= $this->formElement( $userName ) ?>
+			<?= $this->formElementErrors()->render( $userName, [ 'class' => 'help-block' ] ) ?>
         </div>
 
         <div class="form-group">
-            <div class="row">
-                <div class="col-2">
-					<?= $this->formLabel( $password ) ?>
-                </div>
-                <div class="col-10">
-					<?= $this->formElement( $password ) ?>
-					<?= $this->formElementErrors()->render( $password, [ 'class' => 'help-block' ] ) ?>
-                </div>
-            </div>
+			<?= $this->formLabel( $password ) ?>
+			<?= $this->formElement( $password ) ?>
+			<?= $this->formElementErrors()->render( $password, [ 'class' => 'help-block' ] ) ?>
+            <small id="passwordHelpBlock" class="form-text text-muted">
+                Password must be 8 to 100 characters.
+            </small>
         </div>
 
         <div class="form-group">
-            <div class="row">
-                <div class="col-2">
-					<?= $this->formLabel( $verifyPassword ) ?>
-                </div>
-                <div class="col-10">
-					<?= $this->formElement( $verifyPassword ) ?>
-					<?= $this->formElementErrors()->render( $verifyPassword, [ 'class' => 'help-block' ] ) ?>
-                </div>
-            </div>
+			<?= $this->formLabel( $verifyPassword ) ?>
+			<?= $this->formElement( $verifyPassword ) ?>
+			<?= $this->formElementErrors()->render( $verifyPassword, [ 'class' => 'help-block' ] ) ?>
+            <small id="verifyPasswordHelpBlock" class="form-text text-muted">
+                Re-enter password.
+            </small>
         </div>
 
 		<?= $this->formElement( $Form->get( 'security' ) ) ?>
