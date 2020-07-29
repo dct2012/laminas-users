@@ -11,7 +11,6 @@ class IndexController extends AbstractActionController {
 		return $this->redirect()->toRoute(
 			( $this->plugin( 'identity' )->getAuthenticationService() )->hasIdentity()
 				? 'user'
-				: 'user/login'
-		);
+				: 'user/login' );
 	}
 }

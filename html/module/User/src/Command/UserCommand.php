@@ -2,115 +2,86 @@
 
 namespace User\Command;
 
-use User\Model\User;
-use RuntimeException;
-use Laminas\Hydrator\ReflectionHydrator;
-use Laminas\Db\ResultSet\HydratingResultSet;
-use Laminas\Db\Adapter\AdapterInterface;
-use Laminas\Db\Adapter\Driver\Pdo\Result;
-use Laminas\Db\Adapter\Driver\ResultInterface;
-use Laminas\Db\Sql\{Delete, Select, Update, Insert, Sql};
+use ReflectionException, RuntimeException;
+use User\Enum\UserFields as UFs;
+use Application\Model\ModelInterface;
+use Application\Command\AbstractCommand;
+use Application\Exceptions\DbOperationHadNoAffectException;
 
-class UserCommand {
-	/** @var AdapterInterface */
-	private AdapterInterface $db;
-
-	/** @param AdapterInterface $db */
-	public function __construct( AdapterInterface $db ) {
-		$this->db = $db;
+class UserCommand extends AbstractCommand {
+	/* @return string */
+	static public function getTableName(): string {
+		return 'users';
 	}
 
 	/**
-	 * @param User $User
-	 * @return User
+	 * @return array
+	 * @throws ReflectionException
 	 */
-	public function create( User $User ): User {
-		$username = $User->getUserName();
-		$password = password_hash( $User->getPassword(), PASSWORD_DEFAULT );
+	static protected function getTableColumns(): array {
+		return array_values( UFs::getInstance()->getArrayCopy() );
+	}
 
-		$User = $this->read( $User );
+	/**
+	 * @param ModelInterface $User
+	 * @param array          $values
+	 *
+	 * @return ModelInterface
+	 */
+	public function create( ModelInterface $User, array $values = [] ): ModelInterface {
+		try {
+			$User = $this->read( $User );
+		} catch( DbOperationHadNoAffectException $e ) {
+			// Successfull
+		}
+
 		if( !empty( $User->getId() ) ) {
-			throw new RuntimeException( "Username: {$username}, already exists!" );
+			throw new RuntimeException( "Username: {$User->getUserName()}, already exists!" );
 		}
 
-		$Insert = ( new Insert( 'users' ) )
-			->values( [ 'username' => $username, 'password' => $password ] );
-
-		$Result = ( new Sql( $this->db ) )
-			->prepareStatementForSqlObject( $Insert )
-			->execute();
-		if( !$Result instanceof ResultInterface ) {
-			throw new RuntimeException( 'Database error occurred during user insert operation!' );
-		}
-
-		return new User( $username, $password, $Result->getGeneratedValue() );
+		return parent::create( $User, empty( $values )
+			? [ UFs::USERNAME => $User->getUserName(), UFs::PASSWORD => $User->getPassword() ]
+			: $values );
 	}
 
 	/**
-	 * @param User $User
-	 * @return User
+	 * @param ModelInterface $User
+	 * @param array          $where
+	 *
+	 * @return ModelInterface
 	 */
-	public function read( User $User ): User {
-		$Select = ( new Select( 'users' ) )
-			->columns( [ 'id', 'username', 'password', 'updated_on', 'created_on' ] )
-			->where( [ 'username' => $User->getUserName() ] );
-
-		$Result = ( new Sql( $this->db ) )
-			->prepareStatementForSqlObject( $Select )
-			->execute();
-		if( !$Result instanceof ResultInterface ) {
-			throw new RuntimeException( 'Database error occurred during user read operation!' );
-		}
-
-		foreach( ( new HydratingResultSet( new ReflectionHydrator(), $User ) )->initialize( $Result ) as $u ) {
-			$User = $u;
-		}
-
-		return $User;
+	public function read( ModelInterface $User, array $where = [] ): ModelInterface {
+		return parent::read( $User, empty( $where )
+			? [ UFs::USERNAME => $User->getUserName() ]
+			: $where );
 	}
 
 	/**
-	 * @param User $User
-	 * @return User
+	 * @param ModelInterface $User
+	 * @param array          $values
+	 * @param array          $where
+	 *
+	 * @return ModelInterface
 	 */
-	public function update( User $User ): User {
-		$Update = ( new Update( 'users' ) )
-			->set( [ 'password' => $User->setPassword( User::hashPassword( $User->getPassword() ) )->getPassword() ] )
-			->where( [ 'username' => $User->getUserName() ] );
-
-		/* @var Result $Result */
-		$Result = ( new Sql( $this->db ) )
-			->prepareStatementForSqlObject( $Update )
-			->execute();
-
-		if( !$Result instanceof ResultInterface ) {
-			throw new RuntimeException( 'Database error occurred during updating user\'s password operation!' );
-		}
-		if( $Result->getAffectedRows() == 0 ) {
-			throw new RuntimeException( 'Failed to update user\'s password!' );
-		}
-
-		return $User;
+	public function update( ModelInterface $User, array $values = [], array $where = [] ): ModelInterface {
+		return parent::update( $User,
+			empty( $values )
+				? [ UFs::PASSWORD => $User->getPassword() ]
+				: $values,
+			empty( $where )
+				? [ UFs::USERNAME => $User->getUserName() ]
+				: $where );
 	}
 
 	/**
-	 * @param User $User
-	 * @return User
+	 * @param ModelInterface $User
+	 * @param array          $where
+	 *
+	 * @return ModelInterface
 	 */
-	public function delete( User $User ): User {
-		$Delete = ( new Delete( 'users' ) )
-			->where( [ 'username' => $User->getUserName() ] );
-
-		$Result = ( new Sql( $this->db ) )
-			->prepareStatementForSqlObject( $Delete )
-			->execute();
-		if( !$Result instanceof ResultInterface ) {
-			throw new RuntimeException( 'Database error occurred during user delete operation!' );
-		}
-		if( $Result->getAffectedRows() == 0 ) {
-			throw new RuntimeException( 'Failed to delete user!' );
-		}
-
-		return $User;
+	public function delete( ModelInterface $User, array $where = [] ): ModelInterface {
+		return parent::delete( $User, empty( $where )
+			? [ UFs::USERNAME => $User->getUserName() ]
+			: $where );
 	}
 }

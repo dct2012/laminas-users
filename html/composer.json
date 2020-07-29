@@ -27,12 +27,14 @@
   "autoload": {
     "psr-4": {
       "Application\\": "module/Application/src/",
+      "UserLogin\\": "module/UserLogin/src/",
       "User\\": "module/User/src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
       "ApplicationTest\\": "module/Application/test/",
+      "UserLoginTest\\": "module/UserLogin/test/",
       "UserTest\\": "module/User/test/"
     }
   },

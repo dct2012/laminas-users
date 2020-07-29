@@ -19,5 +19,6 @@ return [
 	'Laminas\Router',
 	'Laminas\Validator',
 	'Application',
+	'UserLogin',
 	'User',
 ];

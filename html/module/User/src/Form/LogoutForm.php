@@ -8,15 +8,13 @@ class LogoutForm extends Form {
 	public function __construct() {
 		parent::__construct( 'logout' );
 
-		$this->add(
-			[
-				'name'       => 'logout',
-				'type'       => 'submit',
-				'attributes' => [
-					'value' => 'logout',
-					'id'    => 'logoutButton',
-				],
-			]
-		);
+		$this->add( [
+			'name'       => 'logout',
+			'type'       => 'submit',
+			'attributes' => [
+				'value' => 'logout',
+				'id'    => 'logoutButton',
+			],
+		] );
 	}
 }

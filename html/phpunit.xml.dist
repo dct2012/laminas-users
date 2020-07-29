@@ -7,6 +7,9 @@
         <testsuite name="User">
             <directory>./module/User/test</directory>
         </testsuite>
+        <testsuite name="UserLogin">
+            <directory>./module/UserLogin/test</directory>
+        </testsuite>
     </testsuites>
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">

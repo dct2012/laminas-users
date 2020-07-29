@@ -5,11 +5,11 @@ namespace User\Controller;
 use Exception;
 use User\Model\User;
 use User\Command\UserCommand;
+use User\Enum\UserFields as UFs;
 use User\Form\{DeleteForm, InfoForm, LoginForm, LogoutForm, SignupForm, UpdateForm};
 use Laminas\Form\Form;
-use Laminas\Http\Request;
-use Laminas\Http\Response;
 use Laminas\View\Model\ViewModel;
+use Laminas\Http\{Request, Response};
 use Laminas\Validator\{Identical, StringLength};
 use Laminas\Authentication\AuthenticationService;
 use Laminas\Authentication\Adapter\AbstractAdapter;
@@ -23,11 +23,17 @@ class UserController extends AbstractActionController {
 	protected UserCommand $Command;
 	/** @var FormManager */
 	protected FormManager $FormManager;
+	/** @var AuthenticationService */
 	protected AuthenticationService $AS;
+	/** @var FlashMessenger */
 	protected FlashMessenger $FM;
+	/** @var Form */
 	protected Form $Form;
+	/** @var Identity */
 	protected Identity $Identity;
+	/** @var Request */
 	protected Request $Request;
+	/** @var ?AbstractAdapter */
 	protected ?AbstractAdapter $Adapter;
 
 	/**
@@ -54,21 +60,24 @@ class UserController extends AbstractActionController {
 	/**
 	 * @param string $redirect
 	 * @param string $errorMsg
+	 *
 	 * @return ?Response
 	 */
 	protected function ensureLoggedIn( string $redirect, string $errorMsg ): ?Response {
 		if( !$this->AS->hasIdentity() ) {
 			$this->FM->addErrorMessage( $errorMsg );
+
 			return $this->redirect()->toRoute( $redirect );
 		}
 
 		return null;
 	}
 
-	/** @return Response|null */
+	/** @return ?Response */
 	protected function ensureLoggedOut(): ?Response {
 		if( $this->AS->hasIdentity() ) {
 			$this->FM->addInfoMessage( 'You are already logged in.' );
+
 			return $this->redirect()->toRoute( 'user' );
 		}
 
@@ -82,6 +91,7 @@ class UserController extends AbstractActionController {
 			foreach( $this->Form->getMessages() as $error ) {
 				$this->FM->addErrorMessage( $error );
 			}
+
 			return $this->redirect()->refresh();
 		}
 
@@ -92,11 +102,13 @@ class UserController extends AbstractActionController {
 	 * @param string $left
 	 * @param string $right
 	 * @param string $errorMsg
+	 *
 	 * @return ?Response
 	 */
 	protected function ensureIdentical( string $left, string $right, string $errorMsg = 'Passwords are not identical!' ): ?Response {
 		if( !( new Identical( $left ) )->isValid( $right ) ) {
 			$this->FM->addErrorMessage( $errorMsg );
+
 			return $this->redirect()->refresh();
 		}
 
@@ -105,7 +117,8 @@ class UserController extends AbstractActionController {
 
 	/**
 	 * @param string $password
-	 * @return Response|null
+	 *
+	 * @return ?Response
 	 */
 	protected function ensurePasswordConstraints( string $password ): ?Response {
 		$StringLength = ( new StringLength( [ 'min' => 8, 'max' => 100 ] ) )
@@ -115,6 +128,7 @@ class UserController extends AbstractActionController {
 			foreach( $StringLength->getMessages() as $error ) {
 				$this->FM->addErrorMessage( $error );
 			}
+
 			return $this->redirect()->refresh();
 		}
 
@@ -124,6 +138,7 @@ class UserController extends AbstractActionController {
 	/**
 	 * @param string $username
 	 * @param string $password
+	 *
 	 * @return ?Response
 	 */
 	protected function validatePassword( string $username, string $password ): ?Response {
@@ -132,6 +147,7 @@ class UserController extends AbstractActionController {
 			foreach( $Result->getMessages() as $error ) {
 				$this->FM->addErrorMessage( $error );
 			}
+
 			return $this->redirect()->refresh();
 		}
 
@@ -140,7 +156,8 @@ class UserController extends AbstractActionController {
 
 	/**
 	 * @param User $User
-	 * @return Response|null
+	 *
+	 * @return ?Response
 	 */
 	protected function authenticateLogin( User $User ): ?Response {
 		$this->Adapter->setIdentity( $User->getUserName() )->setCredential( $User->getPassword() );
@@ -149,6 +166,7 @@ class UserController extends AbstractActionController {
 			foreach( $Result->getMessages() as $error ) {
 				$this->FM->addErrorMessage( $error );
 			}
+
 			return $this->redirect()->refresh();
 		}
 
@@ -157,14 +175,16 @@ class UserController extends AbstractActionController {
 
 	/**
 	 * @param callable $func
-	 * @param User $User
-	 * @return Response|null
+	 * @param User     $User
+	 *
+	 * @return ?Response
 	 */
 	protected function execUserFunc( callable $func, User $User ): ?Response {
 		try {
 			$func( $User );
 		} catch( Exception $e ) {
 			$this->FM->addErrorMessage( $e->getMessage() );
+
 			return $this->redirect()->refresh();
 		}
 
@@ -193,12 +213,13 @@ class UserController extends AbstractActionController {
 		}
 
 		$data     = $this->Request->getPost();
-		$Response = $this->ensureIdentical( $data[ 'password' ], $data[ 'verify-password' ] );
+		$password = $data[ 'password' ];
+		$Response = $this->ensureIdentical( $password, $data[ 'verify-password' ] );
 		if( !empty( $Response ) ) {
 			return $Response;
 		}
 
-		$Response = $this->ensurePasswordConstraints( $data[ 'password' ] );
+		$Response = $this->ensurePasswordConstraints( $password );
 		if( !empty( $Response ) ) {
 			return $Response;
 		}
@@ -210,7 +231,7 @@ class UserController extends AbstractActionController {
 
 		/* @var User $User */
 		$User     = $this->Form->getData();
-		$Response = $this->execUserFunc( [ $this->Command, 'create' ], $User );
+		$Response = $this->execUserFunc( [ $this->Command, 'create' ], $User->setPassword( $password ) );
 		if( !empty( $Response ) ) {
 			return $Response;
 		}
@@ -246,6 +267,7 @@ class UserController extends AbstractActionController {
 		}
 		if( ( new Identical( $newPassword ) )->isValid( $currentPassword ) ) {
 			$this->FM->addErrorMessage( 'Current password and new password must be different!' );
+
 			return $this->redirect()->refresh();
 		}
 
@@ -265,7 +287,7 @@ class UserController extends AbstractActionController {
 			return $Response;
 		}
 
-		$Response = $this->execUserFunc( [ $this->Command, 'update' ], $User );
+		$Response = $this->execUserFunc( [ $this->Command, 'update' ], $User->setPassword( $newPassword ) );
 		if( !empty( $Response ) ) {
 			return $Response;
 		}
@@ -325,9 +347,7 @@ class UserController extends AbstractActionController {
 			return $Response;
 		}
 
-		$userData = $this->Adapter->getResultRowObject( [ 'id', 'password' ] );
-		$this->AS->getStorage()->write( $User->setID( $userData->id )->setPassword( $userData->password ) );
-
+		$this->AS->getStorage()->write( $this->Command->read( $User ) );
 		$this->FM->addSuccessMessage( 'Successfully Logged In.' );
 
 		return $this->redirect()->toRoute( 'user' );
