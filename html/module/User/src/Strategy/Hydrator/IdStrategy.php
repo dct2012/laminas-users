@@ -2,7 +2,6 @@
 
 namespace User\Strategy\Hydrator;
 
-use User\Model\User;
 use Laminas\Hydrator\Strategy\StrategyInterface;
 
 class IdStrategy implements StrategyInterface {

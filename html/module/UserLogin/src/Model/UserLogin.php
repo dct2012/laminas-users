@@ -5,55 +5,64 @@ namespace UserLogin\Model;
 use Application\Model\ModelInterface;
 
 class UserLogin implements ModelInterface {
-	/* @var ?int */
+	/** @var ?int */
 	protected ?int $id;
-	/* @var int */
+	/** @var int */
 	protected int $user_id;
-	/* @var string */
+	/** @var string */
 	protected string $ip_address;
-	/* @var string */
+	/** @var string */
 	protected string $device;
-	/* @var ?string */
+	/** @var ?string */
 	protected ?string $login_time;
+	/** @var ?string */
+	protected ?string $logout_time;
 
 	/**
-	 * @param int     $userID
-	 * @param string  $ipAddress
-	 * @param string  $device
-	 * @param ?int    $id
-	 * @param ?string $loginTime
+	 * @param int         $userID
+	 * @param string      $ipAddress
+	 * @param string      $device
+	 * @param ?int        $id
+	 * @param ?string     $loginTime
+	 * @param string|null $logoutTime
 	 */
-	public function __construct( int $userID, string $ipAddress, string $device, ?int $id = null, ?string $loginTime = null ) {
-		$this->id         = $id;
-		$this->user_id    = $userID;
-		$this->device     = $device;
-		$this->ip_address = $ipAddress;
-		$this->login_time = $loginTime;
+	public function __construct( int $userID, string $ipAddress, string $device, ?int $id = null, ?string $loginTime = null, ?string $logoutTime = null ) {
+		$this->id          = $id;
+		$this->user_id     = $userID;
+		$this->device      = $device;
+		$this->ip_address  = $ipAddress;
+		$this->login_time  = $loginTime;
+		$this->logout_time = $logoutTime;
 	}
 
-	/*  @return ?int */
+	/**  @return ?int */
 	public function getId(): ?int {
 		return $this->id;
 	}
 
-	/* @return int */
+	/** @return int */
 	public function getUserId(): int {
 		return $this->user_id;
 	}
 
-	/* @return string */
+	/** @return string */
 	public function getIpAddress(): string {
 		return $this->ip_address;
 	}
 
-	/* @return string */
+	/** @return string */
 	public function getDevice(): string {
 		return $this->device;
 	}
 
-	/* @return ?string */
+	/** @return ?string */
 	public function getLoginTime(): ?string {
 		return $this->login_time;
+	}
+
+	/** @return ?string */
+	public function getLogoutTime(): ?string {
+		return $this->logout_time;
 	}
 
 	/**
@@ -107,6 +116,17 @@ class UserLogin implements ModelInterface {
 	 */
 	public function setLoginTime( string $loginTime ): self {
 		$this->login_time = $loginTime;
+
+		return $this;
+	}
+
+	/**
+	 * @param string $logoutTime
+	 *
+	 * @return UserLogin
+	 */
+	public function setLogoutTime( string $logoutTime ): self {
+		$this->logout_time = $logoutTime;
 
 		return $this;
 	}

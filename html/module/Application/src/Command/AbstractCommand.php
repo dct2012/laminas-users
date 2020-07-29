@@ -59,13 +59,15 @@ abstract class AbstractCommand {
 	/**
 	 * @param ModelInterface $Model
 	 * @param array          $where
+	 * @param array          $order
 	 *
 	 * @return ModelInterface|array
 	 */
-	public function read( ModelInterface $Model, array $where = [] ) {
+	public function read( ModelInterface $Model, array $where = [], array $order = [ 'id' => 'ASC' ] ) {
 		$Result = $this->executeSqlStatement( 'select', ( new Select( $this::getTableName() ) )
 			->columns( $this::getTableColumns() )
-			->where( $where ) );
+			->where( $where )
+			->order( $order ) );
 
 		$models = [];
 		foreach( ( new HydratingResultSet( new ReflectionHydrator(), $Model ) )->initialize( $Result ) as $M ) {

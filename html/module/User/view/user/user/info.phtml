@@ -83,11 +83,21 @@ $Form->prepare();
 					?>
                     <div class="card">
                         <div class="card-header" id="<?= $cardHeaderId ?>">
-                            <div class="mb-0">
-                                Login Time:
-                                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#<?= $collapseId ?>" aria-expanded="true" aria-controls="<?= $collapseId ?>">
-									<?= $UserLogin->getLoginTime() ?>
-                                </button>
+                            <div class="row">
+                                <div class="col">
+                                    Login Time:
+                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#<?= $collapseId ?>" aria-expanded="true" aria-controls="<?= $collapseId ?>">
+										<?= $UserLogin->getLoginTime() ?>
+                                    </button>
+                                </div>
+								<?php if( !empty( $UserLogin->getLogoutTime() ) ) { ?>
+                                    <div class="col text-right">
+                                        Logout Time:
+                                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#<?= $collapseId ?>" aria-expanded="true" aria-controls="<?= $collapseId ?>">
+											<?= $UserLogin->getLogoutTime() ?>
+                                        </button>
+                                    </div>
+								<?php } ?>
                             </div>
                         </div>
 

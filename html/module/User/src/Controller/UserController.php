@@ -341,6 +341,15 @@ class UserController extends AbstractActionController {
 			return $Response;
 		}
 
+		/** @var User $User */
+		$User      = $this->AS->getIdentity();
+		$UserLogin = $this->UserLoginCommand->read( new UserLogin( 0, '', '' ), [ ULFs::USER_ID => $User->getId() ] );
+		if( is_array( $UserLogin ) ) {
+			$UserLogin = $UserLogin[ 0 ];
+		}
+		/** @var UserLogin $UserLogin */
+		$this->UserLoginCommand->update( $UserLogin );
+
 		$this->AS->clearIdentity();
 		$this->FM->addSuccessMessage( 'Successfully Logged Out.' );
 
@@ -371,9 +380,11 @@ class UserController extends AbstractActionController {
 		if( !empty( $Response ) ) {
 			return $Response;
 		}
-		$User = $this->UserCommand->read( $User );
+		$User      = $this->UserCommand->read( $User );
+		$UserLogin = new UserLogin( $User->getId(), $this->ipAddress, $this->device );
 
-		$this->UserLoginCommand->create( new UserLogin( $User->getId(), $this->ipAddress, $this->device ) );
+		$this->UserLoginCommand->update( $UserLogin, [], [ ULFs::USER_ID => $User->getId(), ULFs::LOGOUT_TIME => null ] );
+		$this->UserLoginCommand->create( $UserLogin );
 		$this->AS->getStorage()->write( $User );
 		$this->FM->addSuccessMessage( 'Successfully Logged In.' );
 

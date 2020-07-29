@@ -2,6 +2,7 @@
 
 namespace User\Command;
 
+use User\Model\User;
 use ReflectionException, RuntimeException;
 use User\Enum\UserFields as UFs;
 use Application\Model\ModelInterface;
@@ -29,10 +30,11 @@ class UserCommand extends AbstractCommand {
 	 * @return ModelInterface
 	 */
 	public function create( ModelInterface $User, array $values = [] ): ModelInterface {
+		/** @var User $User */
 		try {
 			$User = $this->read( $User );
 		} catch( DbOperationHadNoAffectException $e ) {
-			// Successfull
+			// Successful
 		}
 
 		if( !empty( $User->getId() ) ) {
@@ -47,13 +49,16 @@ class UserCommand extends AbstractCommand {
 	/**
 	 * @param ModelInterface $User
 	 * @param array          $where
+	 * @param array          $order
 	 *
 	 * @return ModelInterface|array
 	 */
-	public function read( ModelInterface $User, array $where = [] ) {
-		return parent::read( $User, empty( $where )
-			? [ UFs::USERNAME => $User->getUserName() ]
-			: $where );
+	public function read( ModelInterface $User, array $where = [], array $order = [ UFs::ID => 'ASC' ] ) {
+		/** @var User $User */
+		return parent::read(
+			$User,
+			empty( $where ) ? [ UFs::USERNAME => $User->getUserName() ] : $where,
+			$order );
 	}
 
 	/**
@@ -64,6 +69,7 @@ class UserCommand extends AbstractCommand {
 	 * @return ModelInterface
 	 */
 	public function update( ModelInterface $User, array $values = [], array $where = [] ): ModelInterface {
+		/** @var User $User */
 		return parent::update( $User,
 			empty( $values )
 				? [ UFs::PASSWORD => $User->getPassword() ]
@@ -80,6 +86,7 @@ class UserCommand extends AbstractCommand {
 	 * @return ModelInterface
 	 */
 	public function delete( ModelInterface $User, array $where = [] ): ModelInterface {
+		/** @var User $User */
 		return parent::delete( $User, empty( $where )
 			? [ UFs::USERNAME => $User->getUserName() ]
 			: $where );
