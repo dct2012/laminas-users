@@ -27,8 +27,10 @@ class UserLoginCommand extends AbstractCommand {
 	 *
 	 * @return ModelInterface
 	 */
-	public function create( ModelInterface $UserLogin, array $values = [ ULFs::USER_ID => $UserLogin->getUserId(), ULFs::IP_ADDRESS => $UserLogin->getIpAddress(), ULFs::DEVICE => $UserLogin->getDevice() ] ): ModelInterface {
-		return parent::create( $UserLogin, $values );
+	public function create( ModelInterface $UserLogin, array $values = [] ): ModelInterface {
+		return parent::create( $UserLogin, empty( $values )
+			? [ ULFs::USER_ID => $UserLogin->getUserId(), ULFs::IP_ADDRESS => $UserLogin->getIpAddress(), ULFs::DEVICE => $UserLogin->getDevice() ]
+			: $values );
 	}
 
 	/**
@@ -37,8 +39,10 @@ class UserLoginCommand extends AbstractCommand {
 	 *
 	 * @return ModelInterface
 	 */
-	public function read( ModelInterface $UserLogin, array $where = [ ULFs::ID => $UserLogin->getId() ] ): ModelInterface {
-		return parent::read( $UserLogin, $where );
+	public function read( ModelInterface $UserLogin, array $where = [] ): ModelInterface {
+		return parent::read( $UserLogin, empty( $where )
+			? [ ULFs::ID => $UserLogin->getId() ]
+			: $where );
 	}
 
 	/**
@@ -60,7 +64,9 @@ class UserLoginCommand extends AbstractCommand {
 	 *
 	 * @return ModelInterface
 	 */
-	public function delete( ModelInterface $UserLogin, array $where = [ ULFs::ID => $UserLogin->getId() ] ): ModelInterface {
-		return parent::delete( $UserLogin, $where );
+	public function delete( ModelInterface $UserLogin, array $where = [] ): ModelInterface {
+		return parent::delete( $UserLogin, empty( $where )
+			? [ ULFs::ID => $UserLogin->getId() ]
+			: $where );
 	}
 }

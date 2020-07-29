@@ -2,8 +2,9 @@
 
 namespace User\Factory;
 
-use User\Command\UserCommand as Command;
+use User\Command\UserCommand;
 use User\Controller\UserController as Controller;
+use UserLogin\Command\UserLoginCommand;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
@@ -16,6 +17,6 @@ class UserControllerFactory implements FactoryInterface {
 	 * @return object|Controller
 	 */
 	public function __invoke( ContainerInterface $container, $requestedName, ?array $options = null ) {
-		return new Controller( $container->get( Command::class ), $container->get( 'FormElementManager' ) );
+		return new Controller( $container->get( UserCommand::class ), $container->get( UserLoginCommand::class ), $container->get( 'FormElementManager' ) );
 	}
 }

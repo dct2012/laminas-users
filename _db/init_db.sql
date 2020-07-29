@@ -16,9 +16,9 @@ CREATE TABLE `user_logins`
 (
     `id`         int(10) unsigned NOT NULL AUTO_INCREMENT,
     `user_id`    int(10) unsigned NOT NULL,
-    `ip_address` varchar(100)     NOT NULL,
-    `device`     varchar(100)     NOT NULL,
-    `login_time` time             NOT NULL DEFAULT current_timestamp(),
+    `ip_address` varchar(15)      NOT NULL,
+    `device`     varchar(255)     NOT NULL,
+    `login_time` timestamp        NOT NULL DEFAULT current_timestamp(),
     PRIMARY KEY (`id`),
     KEY `user_logins_FK` (`user_id`),
     CONSTRAINT `user_logins_FK` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE

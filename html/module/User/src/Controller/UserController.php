@@ -5,8 +5,9 @@ namespace User\Controller;
 use Exception;
 use User\Model\User;
 use User\Command\UserCommand;
-use User\Enum\UserFields as UFs;
 use User\Form\{DeleteForm, InfoForm, LoginForm, LogoutForm, SignupForm, UpdateForm};
+use UserLogin\Model\UserLogin;
+use UserLogin\Command\UserLoginCommand;
 use Laminas\Form\Form;
 use Laminas\View\Model\ViewModel;
 use Laminas\Http\{Request, Response};
@@ -19,30 +20,42 @@ use Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
 use Laminas\Form\FormElementManager\FormElementManagerV3Polyfill as FormManager;
 
 class UserController extends AbstractActionController {
-	/** @var UserCommand */
-	protected UserCommand $Command;
-	/** @var FormManager */
-	protected FormManager $FormManager;
-	/** @var AuthenticationService */
-	protected AuthenticationService $AS;
-	/** @var FlashMessenger */
-	protected FlashMessenger $FM;
 	/** @var Form */
 	protected Form $Form;
-	/** @var Identity */
-	protected Identity $Identity;
 	/** @var Request */
 	protected Request $Request;
+	/** @var FlashMessenger */
+	protected FlashMessenger $FM;
+	/** @var Identity */
+	protected Identity $Identity;
+	/** @var FormManager */
+	protected FormManager $FormManager;
+	/** @var UserCommand */
+	protected UserCommand $UserCommand;
 	/** @var ?AbstractAdapter */
 	protected ?AbstractAdapter $Adapter;
+	/** @var AuthenticationService */
+	protected AuthenticationService $AS;
+	/** @var UserLoginCommand */
+	protected UserLoginCommand $UserLoginCommand;
+
+	/** @var string */
+	protected string $ipAddress;
+	/** @var string */
+	protected string $device;
 
 	/**
-	 * @param UserCommand $Command
-	 * @param FormManager $FormManager
+	 * @param UserCommand      $UserCommand
+	 * @param UserLoginCommand $UserLoginCommand
+	 * @param FormManager      $FormManager
 	 */
-	public function __construct( UserCommand $Command, FormManager $FormManager ) {
-		$this->Command     = $Command;
-		$this->FormManager = $FormManager;
+	public function __construct( UserCommand $UserCommand, UserLoginCommand $UserLoginCommand, FormManager $FormManager ) {
+		$this->UserCommand      = $UserCommand;
+		$this->UserLoginCommand = $UserLoginCommand;
+		$this->FormManager      = $FormManager;
+
+		$this->ipAddress = $_SERVER[ 'REMOTE_ADDR' ];
+		$this->device    = $_SERVER[ 'HTTP_USER_AGENT' ];
 	}
 
 	/** @param string $formClass */
@@ -196,7 +209,7 @@ class UserController extends AbstractActionController {
 		$this->init( InfoForm::class );
 
 		return $this->ensureLoggedIn( 'user/login', 'You have to be logged in to view user info!' )
-			?? new ViewModel( [ 'Form' => $this->Form, 'User' => $this->Command->read( $this->AS->getIdentity() ) ] );
+			?? new ViewModel( [ 'Form' => $this->Form, 'User' => $this->UserCommand->read( $this->AS->getIdentity() ) ] );
 	}
 
 	/** @return Response|ViewModel */
@@ -231,7 +244,7 @@ class UserController extends AbstractActionController {
 
 		/* @var User $User */
 		$User     = $this->Form->getData();
-		$Response = $this->execUserFunc( [ $this->Command, 'create' ], $User->setPassword( $password ) );
+		$Response = $this->execUserFunc( [ $this->UserCommand, 'create' ], $User->setPassword( $password ) );
 		if( !empty( $Response ) ) {
 			return $Response;
 		}
@@ -287,7 +300,7 @@ class UserController extends AbstractActionController {
 			return $Response;
 		}
 
-		$Response = $this->execUserFunc( [ $this->Command, 'update' ], $User->setPassword( $newPassword ) );
+		$Response = $this->execUserFunc( [ $this->UserCommand, 'update' ], $User->setPassword( $newPassword ) );
 		if( !empty( $Response ) ) {
 			return $Response;
 		}
@@ -346,8 +359,10 @@ class UserController extends AbstractActionController {
 		if( !empty( $Response ) ) {
 			return $Response;
 		}
+		$User = $this->UserCommand->read( $User );
 
-		$this->AS->getStorage()->write( $this->Command->read( $User ) );
+		$this->UserLoginCommand->create( new UserLogin( $User->getId(), $this->ipAddress, $this->device ) );
+		$this->AS->getStorage()->write( $User );
 		$this->FM->addSuccessMessage( 'Successfully Logged In.' );
 
 		return $this->redirect()->toRoute( 'user' );
@@ -379,7 +394,7 @@ class UserController extends AbstractActionController {
 			return $Response;
 		}
 
-		$Response = $this->execUserFunc( [ $this->Command, 'delete' ], $User );
+		$Response = $this->execUserFunc( [ $this->UserCommand, 'delete' ], $User );
 		if( !empty( $Response ) ) {
 			return $Response;
 		}
