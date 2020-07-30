@@ -1,5 +1,6 @@
 .vagrant/
 vendor/
+node_modules/
 config/development.config.php
 data/cache/*
 !data/cache/.gitkeep

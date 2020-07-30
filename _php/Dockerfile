@@ -1,7 +1,7 @@
 FROM php:7.4-apache
 
 RUN apt-get update && \
-    apt-get install -y libicu-dev unzip zip && \
+    apt-get install -y libicu-dev unzip zip npm nodejs && \
     pecl install xdebug
 
 RUN apt-get clean && \
