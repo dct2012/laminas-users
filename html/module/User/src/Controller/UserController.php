@@ -222,15 +222,17 @@ class UserController extends AbstractActionController {
 		}
 
 		/* @var User $User */
-		$User       = $this->UserCommand->read( $this->AS->getIdentity() );
-		$UserLogins = $this->UserLoginCommand->read( new UserLogin( 0, '', '' ), [ ULFs::USER_ID => $User->getId() ] );
-		if( !is_array( $UserLogins ) ) {
-			$UserLogins = [ $UserLogins ];
+		$User      = $this->UserCommand->read( $this->AS->getIdentity() );
+		$UserLogin = $this->UserLoginCommand->read( new UserLogin( 0, '', '' ), [ ULFs::USER_ID => $User->getId() ] );
+		if( is_array( $UserLogin ) && count( $UserLogin ) > 1 ) {
+			$UserLogin = $UserLogin[ 1 ];
+		} else {
+			$UserLogin = null;
 		}
 
 		$this->PageVisitCommand->create( new PageVisit( 'user', $_SERVER[ 'REMOTE_ADDR' ], $_SERVER[ 'HTTP_USER_AGENT' ], $User->getId() ) );
 
-		return new ViewModel( [ 'Form' => $this->Form, 'User' => $User, 'UserLogins' => $UserLogins ] );
+		return new ViewModel( [ 'Form' => $this->Form, 'User' => $User, 'UserLogin' => $UserLogin ] );
 	}
 
 	/** @return Response|ViewModel */
