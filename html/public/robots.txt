@@ -1,0 +1,26 @@
+# For more information about the robots.txt standard, see:
+# http://www.robotstxt.org/wc/robots.html
+#
+# For syntax checking, see:
+# http://www.sxw.org.uk/computing/robots/check.html
+
+User-agent: *
+Crawl-delay: 10
+# Directories
+Disallow: /css/
+Disallow: /img/
+Disallow: /js/
+# Files
+Disallow: /web.config
+# Paths (clean URLs)
+Disallow: /user
+Disallow: /user/logout
+Disallow: /user/signup
+Disallow: /user/update
+Disallow: /user/login
+# Paths (no clean URLs)
+Disallow: /user/
+Disallow: /user/logout/
+Disallow: /user/signup/
+Disallow: /user/update/
+Disallow: /user/login/
