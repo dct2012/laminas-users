@@ -4,23 +4,14 @@ declare( strict_types = 1 );
 
 namespace App\Controller;
 
-use App\Model\User;
-use App\Form\InfoForm;
-use App\Form\LoginForm;
-use App\Model\UserLogin;
-use App\Model\PageVisit;
-use App\Form\SignupForm;
-use App\Form\UpdateForm;
-use App\Form\LogoutForm;
-use App\Form\DeleteForm;
+use App\Model\{PageVisit, User, UserLogin};
+use App\Model\Values\UserLoginFields as ULFs;
+use App\Exception\DbOperationHadNoAffectException;
+use App\Model\Helper\{PageVisitModelHelper, UserLoginModelHelper, UserModelHelper};
+use App\Form\{DeleteForm, InfoForm, LoginForm, LogoutForm, SignupForm, UpdateForm};
 use Laminas\Http\Response;
 use Laminas\Validator\Identical;
 use Laminas\View\Model\ViewModel;
-use App\Model\Helper\UserModelHelper;
-use App\Model\Helper\UserLoginModelHelper;
-use App\Model\Helper\PageVisitModelHelper;
-use App\Model\Values\UserLoginFields as ULFs;
-use App\Exception\DbOperationHadNoAffectException;
 use Laminas\Form\FormElementManager\FormElementManagerV3Polyfill as FormManager;
 
 class IndexController extends AbstractController {

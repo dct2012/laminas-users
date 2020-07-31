@@ -5,8 +5,8 @@ declare( strict_types = 1 );
 namespace App\Model\Helper;
 
 use ReflectionException;
-use App\Model\Values\PageVisitFields as PVFs;
 use App\Model\{ModelInterface, PageVisit};
+use App\Model\Values\PageVisitFields as PVFs;
 
 class PageVisitModelHelper extends AbstractModelHelper {
 	/* @return string */

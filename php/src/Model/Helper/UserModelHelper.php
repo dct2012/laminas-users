@@ -5,8 +5,8 @@ declare( strict_types = 1 );
 namespace App\Model\Helper;
 
 use ReflectionException, RuntimeException;
-use App\Model\Values\UserFields as UFs;
 use App\Model\{ModelInterface, User};
+use App\Model\Values\UserFields as UFs;
 use App\Exception\DbOperationHadNoAffectException;
 
 class UserModelHelper extends AbstractModelHelper {

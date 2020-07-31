@@ -11,12 +11,10 @@ use Laminas\Http\Response;
 use Laminas\Validator\Identical;
 use Laminas\Validator\StringLength;
 use Laminas\Mvc\Plugin\Identity\Identity;
-use Laminas\Authentication\AuthenticationService;
-use Laminas\Authentication\Adapter\AbstractAdapter;
 use Laminas\Mvc\Controller\AbstractActionController;
-use Laminas\Authentication\Adapter\AdapterInterface;
 use Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
-use Laminas\Authentication\AuthenticationServiceInterface;
+use Laminas\Authentication\Adapter\{AbstractAdapter, AdapterInterface};
+use Laminas\Authentication\{AuthenticationService, AuthenticationServiceInterface};
 use Laminas\Form\FormElementManager\FormElementManagerV3Polyfill as FormManager;
 
 

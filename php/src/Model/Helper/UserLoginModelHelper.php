@@ -5,8 +5,8 @@ declare( strict_types = 1 );
 namespace App\Model\Helper;
 
 use ReflectionException;
-use App\Model\Values\UserLoginFields as ULFs;
 use App\Model\{ModelInterface, UserLogin};
+use App\Model\Values\UserLoginFields as ULFs;
 
 class UserLoginModelHelper extends AbstractModelHelper {
 	/** @return string */
