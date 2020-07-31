@@ -1,0 +1,81 @@
+<?php
+
+use App\Form\SignupForm;
+use Laminas\Form\View\HelperTrait;
+use Laminas\View\Renderer\PhpRenderer;
+
+/** @var PhpRenderer|HelperTrait $this */
+/** @var SignupForm $Form */
+
+$title = 'Sign Up';
+$this->headTitle( $title );
+
+$userName = $Form->get( 'username' )
+                 ->setAttribute( 'class', 'form-control' )
+                 ->setAttribute( 'required', true )
+                 ->setAttribute( 'placeholder', 'Username' );
+
+$password = $Form->get( 'password' )
+                 ->setAttribute( 'class', 'form-control toggle-password' )
+                 ->setAttribute( 'required', true )
+                 ->setAttribute( 'placeholder', 'Password' );
+
+$verifyPassword = $Form->get( 'verify-password' )
+                       ->setAttribute( 'class', 'form-control toggle-password' )
+                       ->setAttribute( 'required', true )
+                       ->setAttribute( 'placeholder', 'Password' );
+
+$submit = $Form->get( 'signup' )
+               ->setAttribute( 'class', 'btn btn-primary' );
+
+$Form->setAttribute( 'action', $this->url( 'user/signup', [ 'action' => 'index' ] ) )
+     ->setAttribute( 'method', 'post' )
+     ->setAttribute( 'autocomplete', 'off' )
+     ->prepare();
+
+?>
+    <div class="card">
+        <div class="card-header">
+            <h1><?= $title ?></h1>
+        </div>
+        <div class="card-body">
+			<?= $this->form()->openTag( $Form ) ?>
+            <div class="form-group">
+				<?= $this->formLabel( $userName ) ?>
+				<?= $this->formElement( $userName ) ?>
+				<?= $this->formElementErrors()->render( $userName, [ 'class' => 'help-block' ] ) ?>
+            </div>
+
+            <div class="form-group">
+				<?= $this->formLabel( $password ) ?>
+				<?= $this->formElement( $password ) ?>
+				<?= $this->formElementErrors()->render( $password, [ 'class' => 'help-block' ] ) ?>
+                <small id="passwordHelpBlock" class="form-text text-muted">
+                    Password must be 8 to 100 characters.
+                </small>
+            </div>
+
+            <div class="form-group">
+				<?= $this->formLabel( $verifyPassword ) ?>
+				<?= $this->formElement( $verifyPassword ) ?>
+				<?= $this->formElementErrors()->render( $verifyPassword, [ 'class' => 'help-block' ] ) ?>
+                <small id="verifyPasswordHelpBlock" class="form-text text-muted">
+                    Re-enter password.
+                </small>
+            </div>
+
+			<?= $this->partial( 'partial/togglepasswordcheckbox' ) ?> Show Passwords
+
+			<?= $this->formElement( $Form->get( 'security' ) ) ?>
+
+            <div class="text-right">
+				<?= $this->formSubmit( $submit ) ?>
+				<?= $this->formHidden( $Form->get( 'id' ) ) ?>
+            </div>
+			<?= $this->form()->closeTag() ?>
+        </div>
+        <div class="card-footer text-muted">
+            Already have a account? <a href="/user/login">Login</a>.
+        </div>
+    </div>
+<?= $this->inlineScript()->prependFile( $this->basePath( 'js/index.js' ) ) ?>

@@ -3,12 +3,12 @@ version: "3.7"
 services:
   users-app:
     build:
-      context: "_php"
+      context: "_docker"
     container_name: users-app
     restart: always
     volumes:
-      - ./html:/var/www
-      - ./_apache:/etc/apache2/sites-available
+      - ./:/var/www
+      - ./_docker/000-default.conf:/etc/apache2/sites-available/000-default.conf
     links:
       - mariadb
     ports:
@@ -24,7 +24,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./_db:/docker-entrypoint-initdb.d
+      - ./_docker/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
       - users-db-volume:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: docker
