@@ -13,9 +13,7 @@
  */
 return [
 	'laminas-developer-tools' => [
-		/**
-		 * General Profiler settings
-		 */
+		/** General Profiler settings */
 		'profiler' => [
 			/**
 			 * Enables or disables the profiler.

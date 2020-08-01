@@ -18,7 +18,7 @@ class IndexControllerTest extends AbstractHttpControllerTestCase {
 
 		$this->setApplicationConfig(
 			ArrayUtils::merge(
-				include __DIR__.'/../../../../config/app.config.php',
+				include __DIR__.'/../../../config/app.config.php',
 				$configOverrides
 			)
 		);
@@ -38,5 +38,14 @@ class IndexControllerTest extends AbstractHttpControllerTestCase {
 	public function testInvalidRouteDoesNotCrash() {
 		$this->dispatch( '/invalid/route', 'GET' );
 		$this->assertResponseStatusCode( 404 );
+	}
+
+	public function testInfoActionRedirectsToLogin() {
+		$this->dispatch( '/user', 'GET' );
+		$this->assertResponseStatusCode( 302 );
+		$this->assertModuleName( 'app' );
+		$this->assertControllerName( IndexController::class );
+		$this->assertControllerClass( 'IndexController' );
+		$this->assertMatchedRouteName( 'user' );
 	}
 }
