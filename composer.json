@@ -50,6 +50,7 @@
   "require-dev": {
     "laminas/laminas-test": "^3.4",
     "phpunit/phpunit": "^9.2",
-    "phpspec/prophecy-phpunit": "^2.0"
+    "phpspec/prophecy-phpunit": "^2.0",
+    "ppito/laminas-whoops": "^2.0"
   }
 }

@@ -16,4 +16,5 @@ return [
 	'Laminas\InputFilter',
 	'Laminas\Mvc\Plugin\Identity',
 	'Laminas\Mvc\Plugin\FlashMessenger',
+	'WhoopsErrorHandler',
 ];
