@@ -4,6 +4,7 @@ declare( strict_types = 1 );
 
 namespace App\Controller\Factory;
 
+use Laminas\Session\SessionManager;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use App\Controller\IndexController;
@@ -19,6 +20,7 @@ class IndexControllerFactory implements FactoryInterface {
 	 */
 	public function __invoke( ContainerInterface $container, $requestedName, ?array $options = null ): IndexController {
 		return new IndexController(
+			$container->get( SessionManager::class ),
 			$container->get( 'FormElementManager' ),
 			$container->get( UserModelHelper::class ),
 			$container->get( UserLoginModelHelper::class ),

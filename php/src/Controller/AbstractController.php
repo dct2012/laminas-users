@@ -10,21 +10,33 @@ use Laminas\Form\Form;
 use Laminas\Http\Response;
 use Laminas\Validator\Identical;
 use Laminas\Validator\StringLength;
+use Laminas\Session\SessionManager;
 use Laminas\Mvc\Plugin\Identity\Identity;
+use Laminas\Authentication\AuthenticationService;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
 use Laminas\Authentication\Adapter\{AbstractAdapter, AdapterInterface};
-use Laminas\Authentication\{AuthenticationService, AuthenticationServiceInterface};
 use Laminas\Form\FormElementManager\FormElementManagerV3Polyfill as FormManager;
 
-
 class AbstractController extends AbstractActionController {
+	/** @var Identity */
+	protected Identity $Identity;
 	/** @var FormManager */
 	protected FormManager $FormManager;
+	/** @var SessionManager */
+	protected SessionManager $SessionManager;
+	/** @var FlashMessenger */
+	protected FlashMessenger $FlashMessenger;
+	/** @var AuthenticationService */
+	protected AuthenticationService $AuthenticationService;
 
-	/** @param FormManager $FormManager */
-	public function __construct( FormManager $FormManager ) {
-		$this->FormManager = $FormManager;
+	/**
+	 * @param SessionManager $SessionManager
+	 * @param FormManager    $FormManager
+	 */
+	public function __construct( SessionManager $SessionManager, FormManager $FormManager ) {
+		$this->SessionManager = $SessionManager;
+		$this->FormManager    = $FormManager;
 	}
 
 	/**
@@ -54,17 +66,31 @@ class AbstractController extends AbstractActionController {
 		return $this->getAuthenticationService()->getAdapter();
 	}
 
-	/** @return AuthenticationService */
-	protected function getAuthenticationService(): AuthenticationServiceInterface {
-		/** @var Identity $Identity */
-		$Identity = $this->plugin( 'identity' );
+	/** @return Identity */
+	protected function getIdentity(): Identity {
+		if( empty( $this->Identity ) ) {
+			$this->Identity = $this->plugin( 'identity' );
+		}
 
-		return $Identity->getAuthenticationService();
+		return $this->Identity;
+	}
+
+	/** @return AuthenticationService */
+	protected function getAuthenticationService(): AuthenticationService {
+		if( empty( $this->AuthenticationService ) ) {
+			$this->AuthenticationService = $this->getIdentity()->getAuthenticationService();
+		}
+
+		return $this->AuthenticationService;
 	}
 
 	/** @return FlashMessenger */
 	protected function getFlashMessenger(): FlashMessenger {
-		return $this->plugin( 'flashMessenger' );
+		if( empty( $this->FlashMessenger ) ) {
+			$this->FlashMessenger = $this->plugin( 'flashMessenger' );
+		}
+
+		return $this->FlashMessenger;
 	}
 
 	/**

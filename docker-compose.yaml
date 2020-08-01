@@ -33,5 +33,17 @@ services:
       MYSQL_PASSWORD: docker
       TZ: US/Eastern
 
+  redis:
+    image: redis:latest
+    container_name: users-redis
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - users-redis-volume:/data
+    environment:
+      TZ: US/Eastern
+
 volumes:
   users-db-volume:
+  users-redis-volume:

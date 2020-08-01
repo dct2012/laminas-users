@@ -12,11 +12,27 @@
  * file.
  */
 
+use Laminas\Session\Storage\SessionStorage;
+use Laminas\Session\Validator\{HttpUserAgent, RemoteAddr};
+
 return [
-	'db' => [
+	'db'              => [
 		'driver'   => 'Pdo',
 		'dsn'      => 'mysql:dbname=docker;host=users-db;charset=utf8',
 		'username' => 'docker',
 		'password' => 'docker',
+	],
+	'session_manager' => [
+		'validators' => [
+			HttpUserAgent::class,
+			RemoteAddr::class,
+		],
+	],
+	'session_storage' => [
+		'type' => SessionStorage::class,
+	],
+	'session_config'  => [
+		'php_save_handler' => 'redis',
+		'save_path'        => 'tcp://users-redis:6379',
 	],
 ];

@@ -6,6 +6,14 @@
  * @see https://docs.laminas.dev/tutorials/advanced-config/#environment-specific-system-configuration
  * @see https://docs.laminas.dev/tutorials/advanced-config/#environment-specific-application-configuration
  */
+
+use Laminas\Session\SessionManager;
+use Laminas\Session\Service\StorageFactory;
+use Laminas\Session\Config\ConfigInterface;
+use Laminas\Session\Storage\StorageInterface;
+use Laminas\Session\Service\SessionConfigFactory;
+use Laminas\Session\Service\SessionManagerFactory;
+
 return [
 	// Retrieve list of modules used in this app.
 	'modules'                 => require __DIR__.'/modules.config.php',
@@ -43,7 +51,7 @@ return [
 		// Whether or not to enable modules dependency checking.
 		// Enabled by default, prevents usage of modules that depend on other modules
 		// that weren't loaded.
-		// 'check_dependencies' => true,
+		'check_dependencies'       => true,
 	],
 
 	// Used to create an own service manager. May contain one or more child arrays.
@@ -57,6 +65,19 @@ return [
 	// ],
 
 	// Initial configuration with which to seed the ServiceManager.
-	// Should be compatible with Laminas\ServiceManager\Config.
-	// 'service_manager' => [],
+	'service_manager'         => [
+		'abstract_factories' => [],
+		'aliases'            => [],
+		'delegators'         => [],
+		'factories'          => [
+			ConfigInterface::class  => SessionConfigFactory::class,
+			StorageInterface::class => StorageFactory::class,
+			SessionManager::class   => SessionManagerFactory::class,
+		],
+		'initializers'       => [],
+		'invokables'         => [],
+		'lazy_services'      => [],
+		'services'           => [],
+		'shared'             => [],
+	],
 ];

@@ -11,6 +11,7 @@ use Interop\Container\ContainerInterface;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\Authentication\AuthenticationService;
+use Laminas\Authentication\Storage\StorageInterface;
 use Laminas\Authentication\Adapter\DbTable\CallbackCheckAdapter;
 
 class AuthenticationServiceFactory implements FactoryInterface {
@@ -19,15 +20,18 @@ class AuthenticationServiceFactory implements FactoryInterface {
 	 * @param string             $requestedName
 	 * @param ?array             $options
 	 *
-	 * @return AuthenticationService|object
+	 * @return AuthenticationService
 	 */
-	public function __invoke( ContainerInterface $container, $requestedName, ?array $options = null ) {
-		return new AuthenticationService( null, new CallbackCheckAdapter(
-			$container->get( AdapterInterface::class ),
-			UserModelHelper::getTableName(),
-			UFs::USERNAME,
-			UFs::PASSWORD,
-			fn( $hash, $password ) => User::verifyPassword( $hash, $password )
-		) );
+	public function __invoke( ContainerInterface $container, $requestedName, ?array $options = null ): AuthenticationService {
+		return new AuthenticationService(
+			$container->get( StorageInterface::class ),
+			new CallbackCheckAdapter(
+				$container->get( AdapterInterface::class ),
+				UserModelHelper::getTableName(),
+				UFs::USERNAME,
+				UFs::PASSWORD,
+				fn( $hash, $password ) => User::verifyPassword( $hash, $password )
+			)
+		);
 	}
 }

@@ -2,14 +2,14 @@ FROM php:7.4-apache
 
 RUN apt-get update && \
     apt-get install -y libicu-dev unzip zip npm nodejs && \
-    pecl install xdebug
+    pecl install xdebug redis
 
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-install intl pdo_mysql;
 
-RUN docker-php-ext-enable xdebug; \
+RUN docker-php-ext-enable xdebug redis; \
     echo "xdebug.var_display_max_depth = -1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
     echo "xdebug.var_display_max_children = -1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
     echo "xdebug.var_display_max_data = -1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \

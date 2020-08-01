@@ -6,9 +6,10 @@ namespace App;
 
 use Laminas\Router\Http\Literal;
 use Laminas\Authentication\AuthenticationServiceInterface;
+use Laminas\Authentication\Storage\StorageInterface as AuthStorageInterface;
 use App\Controller\IndexController;
 use App\Controller\Factory\IndexControllerFactory;
-use App\Factory\AuthenticationServiceFactory;
+use App\Factory\{AuthenticationServiceFactory, AuthenticationStorageFactory};
 use App\Model\Helper\{PageVisitModelHelper, UserModelHelper, UserLoginModelHelper};
 use App\Model\Helper\Factory\{PageVisitModelHelperFactory, UserModelHelperFactory, UserLoginModelHelperFactory};
 
@@ -93,9 +94,10 @@ return [
 	'service_manager' => [
 		'factories' => [
 			AuthenticationServiceInterface::class => AuthenticationServiceFactory::class,
+			AuthStorageInterface::class           => AuthenticationStorageFactory::class,
 			PageVisitModelHelper::class           => PageVisitModelHelperFactory::class,
-			UserModelHelper::class                => UserModelHelperFactory::class,
 			UserLoginModelHelper::class           => UserLoginModelHelperFactory::class,
+			UserModelHelper::class                => UserModelHelperFactory::class,
 		],
 	],
 	'controllers'     => [

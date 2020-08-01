@@ -5,6 +5,7 @@ declare( strict_types = 1 );
 namespace App\Controller;
 
 use App\Model\{PageVisit, User, UserLogin};
+use Laminas\Session\SessionManager;
 use App\Model\Values\UserLoginFields as ULFs;
 use App\Exception\DbOperationHadNoAffectException;
 use App\Model\Helper\{PageVisitModelHelper, UserLoginModelHelper, UserModelHelper};
@@ -22,8 +23,8 @@ class IndexController extends AbstractController {
 	/** @var UserLoginModelHelper */
 	protected UserLoginModelHelper $UserLoginModelHelper;
 
-	public function __construct( FormManager $FormManager, UserModelHelper $UserModelHelper, UserLoginModelHelper $UserLoginModelHelper, PageVisitModelHelper $PageVisitModelHelper ) {
-		parent::__construct( $FormManager );
+	public function __construct( SessionManager $SessionManager, FormManager $FormManager, UserModelHelper $UserModelHelper, UserLoginModelHelper $UserLoginModelHelper, PageVisitModelHelper $PageVisitModelHelper ) {
+		parent::__construct( $SessionManager, $FormManager );
 
 		$this->UserModelHelper      = $UserModelHelper;
 		$this->UserLoginModelHelper = $UserLoginModelHelper;
