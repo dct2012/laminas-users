@@ -5,13 +5,14 @@ declare( strict_types = 1 );
 namespace App\Controller;
 
 use Exception;
-use App\Model\User;
+use App\Model\Helper\PageVisitHelper;
+use App\Model\{Login, PageVisit, User};
 use Laminas\Form\Form;
 use Laminas\Http\Response;
-use Laminas\Validator\Identical;
-use Laminas\Validator\StringLength;
+use Laminas\Db\Adapter\Adapter;
 use Laminas\Session\SessionManager;
 use Laminas\Mvc\Plugin\Identity\Identity;
+use Laminas\Validator\{Identical, StringLength};
 use Laminas\Authentication\AuthenticationService;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
@@ -19,6 +20,8 @@ use Laminas\Authentication\Adapter\{AbstractAdapter, AdapterInterface};
 use Laminas\Form\FormElementManager\FormElementManagerV3Polyfill as FormManager;
 
 class AbstractController extends AbstractActionController {
+	/** @var Adapter */
+	protected Adapter $db;
 	/** @var Identity */
 	protected Identity $Identity;
 	/** @var FormManager */
@@ -27,29 +30,31 @@ class AbstractController extends AbstractActionController {
 	protected SessionManager $SessionManager;
 	/** @var FlashMessenger */
 	protected FlashMessenger $FlashMessenger;
+	/** @var PageVisitHelper */
+	protected PageVisitHelper $PageVisitHelper;
 	/** @var AuthenticationService */
 	protected AuthenticationService $AuthenticationService;
 
 	/**
-	 * @param SessionManager $SessionManager
+	 * @param Adapter        $db
 	 * @param FormManager    $FormManager
+	 * @param SessionManager $SessionManager
 	 */
-	public function __construct( SessionManager $SessionManager, FormManager $FormManager ) {
-		$this->SessionManager = $SessionManager;
-		$this->FormManager    = $FormManager;
+	public function __construct( Adapter $db, FormManager $FormManager, SessionManager $SessionManager ) {
+		$this->db              = $db;
+		$this->FormManager     = $FormManager;
+		$this->SessionManager  = $SessionManager;
+		$this->PageVisitHelper = new PageVisitHelper( $this->db );
 	}
 
 	/**
-	 * @param User $User
+	 * @param string $name
+	 * @param string $password
 	 *
 	 * @return ?Response
 	 */
-	protected function authenticateLogin( User $User ): ?Response {
-		$Result = $this->getAuthenticationService()->authenticate(
-			$this->getAuthenticationAdapter()
-			     ->setIdentity( $User->getUserName() )
-			     ->setCredential( $User->getPassword() )
-		);
+	protected function authenticateLogin( string $name, string $password ): ?Response {
+		$Result = $this->getAuthenticationService()->authenticate( $this->getAuthenticationAdapter()->setIdentity( $name )->setCredential( $password ) );
 		if( $Result->isValid() ) {
 			return null;
 		}
@@ -61,18 +66,23 @@ class AbstractController extends AbstractActionController {
 		return $this->redirect()->refresh();
 	}
 
+	/** @return Login */
+	protected function createLogin(): Login {
+		return new Login( $this->getIpAddress(), $this->getUserAgent() );
+	}
+
+	/**
+	 * @param string $page
+	 *
+	 * @return PageVisit
+	 */
+	protected function createPageVisit( string $page ): PageVisit {
+		return new PageVisit( $page, $this->getIpAddress(), $this->getUserAgent() );
+	}
+
 	/** @return AbstractAdapter */
 	protected function getAuthenticationAdapter(): AdapterInterface {
 		return $this->getAuthenticationService()->getAdapter();
-	}
-
-	/** @return Identity */
-	protected function getIdentity(): Identity {
-		if( empty( $this->Identity ) ) {
-			$this->Identity = $this->plugin( 'identity' );
-		}
-
-		return $this->Identity;
 	}
 
 	/** @return AuthenticationService */
@@ -82,6 +92,15 @@ class AbstractController extends AbstractActionController {
 		}
 
 		return $this->AuthenticationService;
+	}
+
+	/** @return Identity */
+	protected function getIdentity(): Identity {
+		if( empty( $this->Identity ) ) {
+			$this->Identity = $this->plugin( 'identity' );
+		}
+
+		return $this->Identity;
 	}
 
 	/** @return FlashMessenger */
@@ -100,6 +119,16 @@ class AbstractController extends AbstractActionController {
 	 */
 	protected function getForm( string $formClass ): object {
 		return $this->FormManager->get( $formClass );
+	}
+
+	/** @return string */
+	protected function getIpAddress(): string {
+		return $_SERVER[ 'REMOTE_ADDR' ];
+	}
+
+	/** @return string */
+	protected function getUserAgent(): string {
+		return $_SERVER[ 'HTTP_USER_AGENT' ];
 	}
 
 	/**

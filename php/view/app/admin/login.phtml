@@ -1,0 +1,61 @@
+<?php
+
+use Laminas\Form\View\HelperTrait;
+use Laminas\View\Renderer\PhpRenderer;
+use App\Enum\Routes;
+use App\Form\Admin\InfoForm;
+use App\Model\Values\IdentityFields as IFs;
+
+/** @var InfoForm $Form */
+/** @var PhpRenderer|HelperTrait $this */
+
+$title = 'Admin Login';
+$this->headTitle( $title );
+
+$name = $Form->get( IFs::NAME )
+             ->setAttribute( 'class', 'form-control' )
+             ->setAttribute( 'required', true )
+             ->setAttribute( 'placeholder', 'Admin Name' );
+
+$password = $Form->get( IFs::PASSWORD )
+                 ->setAttribute( 'class', 'form-control toggle-password' )
+                 ->setAttribute( 'required', true )
+                 ->setAttribute( 'placeholder', 'Password' );
+
+$Submit = $Form->get( 'login' )
+               ->setAttribute( 'class', 'btn btn-primary' );
+
+$Form->setAttribute( 'action', $this->url( Routes::ADMIN_LOGIN, [ 'action' => 'login' ] ) )
+     ->setAttribute( 'method', 'post' )
+     ->setAttribute( 'autocomplete', 'off' )
+     ->prepare();
+?>
+    <div class="card">
+        <div class="card-header">
+            <h1><?= $title ?></h1>
+        </div>
+        <div class="card-body">
+			<?= $this->form()->openTag( $Form ) ?>
+            <div class="form-group">
+				<?= $this->formLabel( $name ) ?>
+				<?= $this->formElement( $name ) ?>
+				<?= $this->formElementErrors()->render( $name, [ 'class' => 'help-block' ] ) ?>
+            </div>
+
+            <div class="form-group">
+				<?= $this->formLabel( $password ) ?>
+				<?= $this->formElement( $password ) ?>
+				<?= $this->formElementErrors()->render( $password, [ 'class' => 'help-block' ] ) ?>
+            </div>
+
+			<?= $this->partial( 'partial/togglepasswordcheckbox' ) ?> Show Password
+
+			<?= $this->formElement( $Form->get( 'security' ) ) ?>
+
+            <div class="text-right">
+				<?= $this->formSubmit( $Submit ) ?>
+            </div>
+			<?= $this->form()->closeTag() ?>
+        </div>
+    </div>
+<?= $this->inlineScript()->prependFile( $this->basePath( 'js/index.js' ) ) ?>

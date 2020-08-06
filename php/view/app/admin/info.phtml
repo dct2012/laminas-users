@@ -1,0 +1,81 @@
+<?php
+
+use App\Enum\Routes;
+use App\Form\User\InfoForm;
+use App\Model\{Admin, AdminLogin};
+use App\Model\Values\{IdentityFields as IFs, AdminFields as AFs};
+use Laminas\Form\View\HelperTrait;
+use Laminas\View\Renderer\PhpRenderer;
+
+/** @var Admin $Admin */
+/** @var InfoForm $Form */
+/** @var ?AdminLogin $AdminLogin */
+/** @var PhpRenderer|HelperTrait $this */
+
+$title = 'Admin Info';
+$this->headTitle( $title );
+
+$adminID    = $Form->get( AFs::ID )
+                  ->setAttribute( 'class', 'form-control' )
+                  ->setAttribute( 'placeholder', 'ID' )
+                  ->setAttribute( 'readonly', true )
+                  ->setValue( $Admin->getId() );
+$name  = $Form->get( IFs::NAME )
+                  ->setAttribute( 'class', 'form-control' )
+                  ->setAttribute( 'placeholder', 'Admin Name' )
+                  ->setAttribute( 'readonly', true )
+                  ->setValue( $Admin->getName() );
+$updateOn  = $Form->get( IFs::UPDATED_ON )
+                  ->setAttribute( 'class', 'form-control' )
+                  ->setAttribute( 'placeholder', 'date' )
+                  ->setAttribute( 'readonly', true )
+                  ->setValue( $Admin->getUpdatedOn() );
+$createdOn = $Form->get( IFs::CREATED_ON )
+                  ->setAttribute( 'class', 'form-control' )
+                  ->setAttribute( 'placeholder', 'date' )
+                  ->setAttribute( 'readonly', true )
+                  ->setValue( $Admin->getCreatedOn() );
+
+$Form->prepare();
+
+?>
+<div class="card">
+    <div class="card-header">
+        <h1><?= $title ?></h1>
+    </div>
+    <div class="card-body">
+		<?= $this->form()->openTag( $Form ); ?>
+        <div class="form-group">
+			<?= $this->formLabel( $adminID ) ?>
+			<?= $this->formElement( $adminID ) ?>
+			<?= $this->formElementErrors()->render( $adminID, [ 'class' => 'help-block' ] ) ?>
+        </div>
+
+        <div class="form-group">
+			<?= $this->formLabel( $name ) ?>
+			<?= $this->formElement( $name ) ?>
+			<?= $this->formElementErrors()->render( $name, [ 'class' => 'help-block' ] ) ?>
+        </div>
+
+        <div class="form-group">
+			<?= $this->formLabel( $updateOn ) ?>
+			<?= $this->formElement( $updateOn ) ?>
+			<?= $this->formElementErrors()->render( $updateOn, [ 'class' => 'help-block' ] ) ?>
+        </div>
+
+        <div class="form-group">
+			<?= $this->formLabel( $createdOn ) ?>
+			<?= $this->formElement( $createdOn ) ?>
+			<?= $this->formElementErrors()->render( $createdOn, [ 'class' => 'help-block' ] ) ?>
+        </div>
+		<?= $this->form()->closeTag() ?>
+
+		<?php if( !empty( $AdminLogin ) ) { ?>
+            <hr>
+            <div class="form-group">
+                <label for="lastLogin">Last Login:</label>
+                <input type="text" id="lastLogin" name="lastLogin" class="form-control" placeholder="Chrome" readonly="readonly" value="<?= $AdminLogin->getLoginTime() ?> to <?= $AdminLogin->getLogoutTime() ?>">
+            </div>
+		<?php } ?>
+    </div>
+</div>

@@ -7,16 +7,17 @@ namespace App;
 use Laminas\Router\Http\Literal;
 use Laminas\Authentication\AuthenticationServiceInterface;
 use Laminas\Authentication\Storage\StorageInterface as AuthStorageInterface;
-use App\Controller\IndexController;
-use App\Controller\Factory\IndexControllerFactory;
+use App\Enum\Routes;
+use App\Controller\{AdminController, IndexController, UserController};
 use App\Factory\{AuthenticationServiceFactory, AuthenticationStorageFactory};
-use App\Model\Helper\{PageVisitModelHelper, UserModelHelper, UserLoginModelHelper};
-use App\Model\Helper\Factory\{PageVisitModelHelperFactory, UserModelHelperFactory, UserLoginModelHelperFactory};
+use App\Controller\Factory\{AdminControllerFactory, IndexControllerFactory, UserControllerFactory};
+use App\Model\Helper\{AdminLoginHelper, AdminHelper, AdminPageVisitHelper, IdentityHelper, LoginHelper, PageVisitHelper, UserHelper, UserLoginHelper, UserPageVisitHelper};
+use App\Model\Helper\Factory\{AdminLoginHelperFactory, AdminHelperFactory, AdminPageVisitHelperFactory, IdentityHelperFactory, LoginHelperFactory, PageVisitHelperFactory, UserHelperFactory, UserLoginHelperFactory, UserPageVisitHelperFactory};
 
 return [
 	'router'          => [
 		'routes' => [
-			'home' => [
+			'home'  => [
 				'type'    => Literal::class,
 				'options' => [
 					'route'    => '/',
@@ -26,43 +27,23 @@ return [
 					],
 				],
 			],
-			'user' => [
+			'admin' => [
 				'type'          => Literal::class,
 				'options'       => [
-					'route'    => '/user',
+					'route'    => '/admin',
 					'defaults' => [
-						'controller' => IndexController::class,
-						'action'     => 'user',
+						'controller' => AdminController::class,
+						'action'     => 'info',
 					],
 				],
 				'may_terminate' => true,
 				'child_routes'  => [
-					'update' => [
-						'type'    => Literal::class,
-						'options' => [
-							'route'    => '/update',
-							'defaults' => [
-								'controller' => IndexController::class,
-								'action'     => 'update',
-							],
-						],
-					],
-					'delete' => [
-						'type'    => Literal::class,
-						'options' => [
-							'route'    => '/delete',
-							'defaults' => [
-								'controller' => IndexController::class,
-								'action'     => 'delete',
-							],
-						],
-					],
 					'login'  => [
 						'type'    => Literal::class,
 						'options' => [
 							'route'    => '/login',
 							'defaults' => [
-								'controller' => IndexController::class,
+								'controller' => AdminController::class,
 								'action'     => 'login',
 							],
 						],
@@ -72,7 +53,60 @@ return [
 						'options' => [
 							'route'    => '/logout',
 							'defaults' => [
-								'controller' => IndexController::class,
+								'controller' => AdminController::class,
+								'action'     => 'logout',
+							],
+						],
+					],
+				],
+			],
+			'user'  => [
+				'type'          => Literal::class,
+				'options'       => [
+					'route'    => '/user',
+					'defaults' => [
+						'controller' => UserController::class,
+						'action'     => 'info',
+					],
+				],
+				'may_terminate' => true,
+				'child_routes'  => [
+					'update' => [
+						'type'    => Literal::class,
+						'options' => [
+							'route'    => '/update',
+							'defaults' => [
+								'controller' => UserController::class,
+								'action'     => 'update',
+							],
+						],
+					],
+					'delete' => [
+						'type'    => Literal::class,
+						'options' => [
+							'route'    => '/delete',
+							'defaults' => [
+								'controller' => UserController::class,
+								'action'     => 'delete',
+							],
+						],
+					],
+					'login'  => [
+						'type'    => Literal::class,
+						'options' => [
+							'route'    => '/login',
+							'defaults' => [
+								'controller' => UserController::class,
+								'action'     => 'login',
+							],
+						],
+					],
+					'logout' => [
+						'type'    => Literal::class,
+						'options' => [
+							'route'    => '/logout',
+							'defaults' => [
+								'controller' => UserController::class,
 								'action'     => 'logout',
 							],
 						],
@@ -82,7 +116,7 @@ return [
 						'options' => [
 							'route'    => '/signup',
 							'defaults' => [
-								'controller' => IndexController::class,
+								'controller' => UserController::class,
 								'action'     => 'signup',
 							],
 						],
@@ -95,14 +129,22 @@ return [
 		'factories' => [
 			AuthenticationServiceInterface::class => AuthenticationServiceFactory::class,
 			AuthStorageInterface::class           => AuthenticationStorageFactory::class,
-			PageVisitModelHelper::class           => PageVisitModelHelperFactory::class,
-			UserLoginModelHelper::class           => UserLoginModelHelperFactory::class,
-			UserModelHelper::class                => UserModelHelperFactory::class,
+			AdminHelper::class                    => AdminHelperFactory::class,
+			AdminLoginHelper::class               => AdminLoginHelperFactory::class,
+			AdminPageVisitHelper::class           => AdminPageVisitHelperFactory::class,
+			IdentityHelper::class                 => IdentityHelperFactory::class,
+			LoginHelper::class                    => LoginHelperFactory::class,
+			PageVisitHelper::class                => PageVisitHelperFactory::class,
+			UserHelper::class                     => UserHelperFactory::class,
+			UserLoginHelper::class                => UserLoginHelperFactory::class,
+			UserPageVisitHelper::class            => UserPageVisitHelperFactory::class,
 		],
 	],
 	'controllers'     => [
 		'factories' => [
 			IndexController::class => IndexControllerFactory::class,
+			UserController::class  => UserControllerFactory::class,
+			AdminController::class => AdminControllerFactory::class,
 		],
 	],
 	'view_manager'    => [
@@ -124,31 +166,42 @@ return [
 	'navigation'      => [
 		'default' => [
 			[
+				'label' => 'Admin',
+				'route' => Routes::ADMIN,
+				'pages' => [
+					[
+						'label'  => 'Login',
+						'route'  => Routes::ADMIN_LOGIN,
+						'action' => 'login'
+					]
+				]
+			],
+			[
 				'label' => 'Home',
 				'route' => 'home',
 			],
 			[
 				'label' => 'User',
-				'route' => 'user',
+				'route' => Routes::USER,
 				'pages' => [
 					[
 						'label'  => 'Update Password',
-						'route'  => 'user/update',
+						'route'  => Routes::USER_UPDATE,
 						'action' => 'update',
 					],
 					[
-						'label'  => 'Delete User',
-						'route'  => 'user/delete',
+						'label'  => 'Delete',
+						'route'  => Routes::USER_DELETE,
 						'action' => 'delete',
 					],
 					[
 						'label'  => 'Login',
-						'route'  => 'user/login',
+						'route'  => Routes::USER_LOGIN,
 						'action' => 'login',
 					],
 					[
 						'label'  => 'Sign Up',
-						'route'  => 'user/signup',
+						'route'  => Routes::USER_SIGNUP,
 						'action' => 'signup',
 					],
 				],

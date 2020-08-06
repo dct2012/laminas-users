@@ -4,7 +4,7 @@ declare( strict_types = 1 );
 
 namespace App\Enum;
 
-use ReflectionClass, ReflectionException;
+use ReflectionClass, Exception;
 
 abstract class AbstractEnum {
 	/** @return static */
@@ -12,11 +12,12 @@ abstract class AbstractEnum {
 		return new static();
 	}
 
-	/**
-	 * @return array
-	 * @throws ReflectionException
-	 */
+	/** @return array */
 	public function getArrayCopy(): array {
-		return ( new ReflectionClass( get_called_class() ) )->getConstants();
+		try {
+			return ( new ReflectionClass( get_called_class() ) )->getConstants();
+		} catch( Exception $e ) {
+			return [];
+		}
 	}
 }
