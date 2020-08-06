@@ -72,11 +72,11 @@ class Identity implements ModelInterface {
 	}
 
 	/**
-	 * @param string $updatedOn
+	 * @param ?string $updatedOn
 	 *
 	 * @return Identity
 	 */
-	public function setUpdatedOn( string $updatedOn ): self {
+	public function setUpdatedOn( ?string $updatedOn ): self {
 		$this->updated_on = $updatedOn;
 
 
@@ -84,11 +84,11 @@ class Identity implements ModelInterface {
 	}
 
 	/**
-	 * @param string $createdOn
+	 * @param ?string $createdOn
 	 *
 	 * @return self
 	 */
-	public function setCreatedOn( string $createdOn ): self {
+	public function setCreatedOn( ?string $createdOn ): self {
 		$this->created_on = $createdOn;
 
 		return $this;

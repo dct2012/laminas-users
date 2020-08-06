@@ -1,18 +1,15 @@
 <?php
 
 /**
- * If you need an environment-specific system or app configuration,
- * there is an example in the documentation
+ * If you need an environment-specific system or app configuration, there is an example in the documentation
  * @see https://docs.laminas.dev/tutorials/advanced-config/#environment-specific-system-configuration
  * @see https://docs.laminas.dev/tutorials/advanced-config/#environment-specific-application-configuration
  */
 
 use Laminas\Session\SessionManager;
-use Laminas\Session\Service\StorageFactory;
 use Laminas\Session\Config\ConfigInterface;
 use Laminas\Session\Storage\StorageInterface;
-use Laminas\Session\Service\SessionConfigFactory;
-use Laminas\Session\Service\SessionManagerFactory;
+use Laminas\Session\Service\{SessionConfigFactory, SessionManagerFactory, StorageFactory};
 
 return [
 	// Retrieve list of modules used in this app.

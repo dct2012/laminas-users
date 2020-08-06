@@ -22,7 +22,8 @@
     "laminas/laminas-mvc-plugin-identity": "^1.1",
     "laminas/laminas-mvc-plugin-flashmessenger": "^1.2",
     "laminas/laminas-validator": "^2.13",
-    "laminas/laminas-math": "^3.2"
+    "laminas/laminas-math": "^3.2",
+    "symfony/console": "^5.1"
   },
   "autoload": {
     "psr-4": {
