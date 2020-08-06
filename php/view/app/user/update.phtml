@@ -38,44 +38,43 @@ $Form->setAttribute( 'action', $this->url( Routes::USER_UPDATE, [ 'action' => 'u
      ->prepare();
 
 ?>
-    <div class="card">
-        <div class="card-header">
-            <h1><?= $title ?></h1>
-        </div>
-        <div class="card-body">
-			<?= $this->form()->openTag( $Form ) ?>
-            <div class="form-group">
-				<?= $this->formLabel( $currentPassword ) ?>
-				<?= $this->formElement( $currentPassword ) ?>
-				<?= $this->formElementErrors()->render( $currentPassword, [ 'class' => 'help-block' ] ) ?>
-            </div>
-
-            <div class="form-group">
-				<?= $this->formLabel( $newPassword ) ?>
-				<?= $this->formElement( $newPassword ) ?>
-				<?= $this->formElementErrors()->render( $newPassword, [ 'class' => 'help-block' ] ) ?>
-                <small id="newPasswordHelpBlock" class="form-text text-muted">
-                    New password must be different than the current password. Password must be 8 to 100 characters.
-                </small>
-            </div>
-
-            <div class="form-group">
-				<?= $this->formLabel( $verifyNewPassword ) ?>
-				<?= $this->formElement( $verifyNewPassword ) ?>
-				<?= $this->formElementErrors()->render( $verifyNewPassword, [ 'class' => 'help-block' ] ) ?>
-                <small id="verifyNewPasswordHelpBlock" class="form-text text-muted">
-                    Re-enter new password.
-                </small>
-            </div>
-
-			<?= $this->partial( 'partial/togglepasswordcheckbox' ) ?> Show Passwords
-
-			<?= $this->formElement( $Form->get( 'security' ) ) ?>
-
-            <div class="text-right">
-				<?= $this->formSubmit( $submit ) ?>
-            </div>
-			<?= $this->form()->closeTag() ?>
-        </div>
+<div class="card">
+    <div class="card-header">
+        <h1><?= $title ?></h1>
     </div>
-<?= $this->inlineScript()->prependFile( $this->basePath( 'js/index.js' ) ) ?>
+    <div class="card-body">
+		<?= $this->form()->openTag( $Form ) ?>
+        <div class="form-group">
+			<?= $this->formLabel( $currentPassword ) ?>
+			<?= $this->formElement( $currentPassword ) ?>
+			<?= $this->formElementErrors()->render( $currentPassword, [ 'class' => 'help-block' ] ) ?>
+        </div>
+
+        <div class="form-group">
+			<?= $this->formLabel( $newPassword ) ?>
+			<?= $this->formElement( $newPassword ) ?>
+			<?= $this->formElementErrors()->render( $newPassword, [ 'class' => 'help-block' ] ) ?>
+            <small id="newPasswordHelpBlock" class="form-text text-muted">
+                New password must be different than the current password. Password must be 8 to 100 characters.
+            </small>
+        </div>
+
+        <div class="form-group">
+			<?= $this->formLabel( $verifyNewPassword ) ?>
+			<?= $this->formElement( $verifyNewPassword ) ?>
+			<?= $this->formElementErrors()->render( $verifyNewPassword, [ 'class' => 'help-block' ] ) ?>
+            <small id="verifyNewPasswordHelpBlock" class="form-text text-muted">
+                Re-enter new password.
+            </small>
+        </div>
+
+		<?= $this->partial( 'partial/togglepasswordcheckbox' ) ?> Show Passwords
+
+		<?= $this->formElement( $Form->get( 'security' ) ) ?>
+
+        <div class="text-right">
+			<?= $this->formSubmit( $submit ) ?>
+        </div>
+		<?= $this->form()->closeTag() ?>
+    </div>
+</div>

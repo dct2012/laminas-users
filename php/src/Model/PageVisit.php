@@ -51,11 +51,11 @@ class PageVisit implements ModelInterface {
 	}
 
 	/**
-	 * @param string $visitTime
+	 * @param ?string $visitTime
 	 *
 	 * @return self
 	 */
-	public function setVisitTime( string $visitTime ): self {
+	public function setVisitTime( ?string $visitTime ): self {
 		$this->visit_time = $visitTime;
 
 		return $this;

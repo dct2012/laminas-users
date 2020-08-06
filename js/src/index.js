@@ -1,3 +1,7 @@
+import 'bootstrap';
+import $ from 'jquery';
+import '../../scss/style.scss';
+
 (() => {
     $('#show-password').on('click', () => {
         const $password = $('.toggle-password')

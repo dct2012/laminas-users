@@ -14,15 +14,11 @@ $title = 'Laminas Users';
 	?>
 
     <!-- Le styles -->
-	<?= $this->headLink(
-		[
-			'rel'  => 'shortcut icon',
-			'type' => 'image/vnd.microsoft.icon',
-			'href' => $this->basePath().'/img/favicon.ico'
-		]
-	)
-	         ->prependStylesheet( $this->basePath( 'css/style.css' ) )
-	         ->prependStylesheet( $this->basePath( 'css/bootstrap.min.css' ) )
+	<?= $this->headLink( [
+		'rel'  => 'shortcut icon',
+		'type' => 'image/vnd.microsoft.icon',
+		'href' => $this->basePath().'/img/favicon.ico'
+	] )
 	?>
     <!-- Scripts -->
 	<?= $this->headScript() ?>
@@ -86,8 +82,6 @@ $title = 'Laminas Users';
 	echo $this->content;
 	?>
 </div>
-<?= $this->inlineScript()
-         ->prependFile( $this->basePath( 'js/bootstrap.min.js' ) )
-         ->prependFile( $this->basePath( 'js/jquery-3.5.1.min.js' ) ) ?>
+<?= $this->inlineScript()->prependFile( $this->basePath( 'js/bundle.js' ) ) ?>
 </body>
 </html>

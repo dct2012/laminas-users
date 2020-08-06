@@ -30,35 +30,34 @@ $Form->setAttribute( 'action', $this->url( Routes::USER_LOGIN, [ 'action' => 'lo
      ->setAttribute( 'autocomplete', 'off' )
      ->prepare();
 ?>
-    <div class="card">
-        <div class="card-header">
-            <h1><?= $title ?></h1>
-        </div>
-        <div class="card-body">
-			<?= $this->form()->openTag( $Form ) ?>
-            <div class="form-group">
-				<?= $this->formLabel( $name ) ?>
-				<?= $this->formElement( $name ) ?>
-				<?= $this->formElementErrors()->render( $name, [ 'class' => 'help-block' ] ) ?>
-            </div>
-
-            <div class="form-group">
-				<?= $this->formLabel( $password ) ?>
-				<?= $this->formElement( $password ) ?>
-				<?= $this->formElementErrors()->render( $password, [ 'class' => 'help-block' ] ) ?>
-            </div>
-
-			<?= $this->partial( 'partial/togglepasswordcheckbox' ) ?> Show Password
-
-			<?= $this->formElement( $Form->get( 'security' ) ) ?>
-
-            <div class="text-right">
-				<?= $this->formSubmit( $Submit ) ?>
-            </div>
-			<?= $this->form()->closeTag() ?>
-        </div>
-        <div class="card-footer text-muted">
-            Don't have an account? <a href="/<?= Routes::USER_SIGNUP ?>">Sign up</a>.
-        </div>
+<div class="card">
+    <div class="card-header">
+        <h1><?= $title ?></h1>
     </div>
-<?= $this->inlineScript()->prependFile( $this->basePath( 'js/index.js' ) ) ?>
+    <div class="card-body">
+		<?= $this->form()->openTag( $Form ) ?>
+        <div class="form-group">
+			<?= $this->formLabel( $name ) ?>
+			<?= $this->formElement( $name ) ?>
+			<?= $this->formElementErrors()->render( $name, [ 'class' => 'help-block' ] ) ?>
+        </div>
+
+        <div class="form-group">
+			<?= $this->formLabel( $password ) ?>
+			<?= $this->formElement( $password ) ?>
+			<?= $this->formElementErrors()->render( $password, [ 'class' => 'help-block' ] ) ?>
+        </div>
+
+		<?= $this->partial( 'partial/togglepasswordcheckbox' ) ?> Show Password
+
+		<?= $this->formElement( $Form->get( 'security' ) ) ?>
+
+        <div class="text-right">
+			<?= $this->formSubmit( $Submit ) ?>
+        </div>
+		<?= $this->form()->closeTag() ?>
+    </div>
+    <div class="card-footer text-muted">
+        Don't have an account? <a href="/<?= Routes::USER_SIGNUP ?>">Sign up</a>.
+    </div>
+</div>
