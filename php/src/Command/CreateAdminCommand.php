@@ -66,6 +66,9 @@ class CreateAdminCommand extends Command {
 			$output->writeln( "<info>".F::createTimeStamp()."</info>|INFO|<comment>Checking if a identity with name '{$name}' already exists.</comment> " );
 			$this->assertIdentityDoesntExist( $Identity );
 
+			$output->writeln( "<info>".F::createTimeStamp()."</info>|INFO|<comment>Checking if password '{$password}' meets requirements.</comment> " );
+			F::assertPasswordConstraints( $password );
+
 			$output->writeln( "<info>".F::createTimeStamp()."</info>|INFO|<comment>Creating Identity.</comment>" );
 			$Identity = $this->IdentityHelper->create( $Identity );
 

@@ -5,14 +5,15 @@ declare( strict_types = 1 );
 namespace App\Controller;
 
 use Exception;
+use App\Functions as F;
 use App\Model\Helper\PageVisitHelper;
 use App\Model\{Login, PageVisit, User};
 use Laminas\Form\Form;
 use Laminas\Http\Response;
 use Laminas\Db\Adapter\Adapter;
+use Laminas\Validator\Identical;
 use Laminas\Session\SessionManager;
 use Laminas\Mvc\Plugin\Identity\Identity;
-use Laminas\Validator\{Identical, StringLength};
 use Laminas\Authentication\AuthenticationService;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
@@ -181,18 +182,15 @@ class AbstractController extends AbstractActionController {
 	 * @return ?Response
 	 */
 	protected function ensurePasswordConstraints( string $password ): ?Response {
-		$StringLength = ( new StringLength( [ 'min' => 8, 'max' => 100 ] ) )
-			->setMessage( 'The password is less than %min% characters long', StringLength::TOO_SHORT )
-			->setMessage( 'The password is more than %max% characters long', StringLength::TOO_LONG );
-		if( $StringLength->isValid( $password ) ) {
-			return null;
+		try {
+			F::assertPasswordConstraints( $password );
+		} catch( Exception $e ) {
+			$this->getFlashMessenger()->addErrorMessage( $e->getMessage() );
+
+			return $this->redirect()->refresh();
 		}
 
-		foreach( $StringLength->getMessages() as $error ) {
-			$this->getFlashMessenger()->addErrorMessage( $error );
-		}
-
-		return $this->redirect()->refresh();
+		return null;
 	}
 
 	/**
