@@ -9,14 +9,16 @@ require __DIR__.'/../vendor/autoload.php';
 
 use Laminas\Db\Adapter\Adapter;
 use Symfony\Component\Console\Application;
-use App\Command\CreateAdminCommand;
 use App\Functions as F;
+use App\Command\Admin\{AdminCreateCommand, AdminDeleteCommand, AdminUpdateCommand};
 
 $application = new Application();
 
 $db = new Adapter( F::getDbConfig() );
 
-$application->add( new CreateAdminCommand( $db ) );
+$application->add( new AdminCreateCommand( $db ) );
+$application->add( new AdminDeleteCommand( $db ) );
+$application->add( new AdminUpdateCommand( $db ) );
 
 try {
 	$application->run();

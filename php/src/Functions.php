@@ -36,7 +36,7 @@ class Functions {
 	 *
 	 * @throws Exception
 	 */
-	public static function assertPasswordConstraints( string $password ) {
+	public static function assertPasswordLength( string $password ) {
 		$StringLength = ( new StringLength( [ 'min' => 8, 'max' => 100 ] ) )
 			->setMessage( 'The password is less than %min% characters long!', StringLength::TOO_SHORT )
 			->setMessage( 'The password is more than %max% characters long!', StringLength::TOO_LONG );

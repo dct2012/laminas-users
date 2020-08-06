@@ -2,27 +2,29 @@
 
 declare( strict_types = 1 );
 
-namespace App\Command;
+namespace App\Command\Admin;
 
 use Exception, RuntimeException;
-use App\Model\Admin;
-use App\Model\Identity;
 use App\Functions as F;
-use App\Model\Helper\{AdminHelper, IdentityHelper};
+use App\Model\{Admin, Identity};
 use App\Model\Values\IdentityFields as IFs;
+use App\Model\Helper\{AdminHelper, IdentityHelper};
 use Laminas\Db\Adapter\AdapterInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\{InputArgument, InputInterface};
 
-class CreateAdminCommand extends Command {
-	protected static           $defaultName = 'admin:create';
-	protected AdminHelper      $AdminHelper;
-	protected IdentityHelper   $IdentityHelper;
+class AdminCreateCommand extends Command {
+	/** @var AdapterInterface */
 	protected AdapterInterface $db;
+	/** @var AdminHelper */
+	protected AdminHelper $AdminHelper;
+	/** @var IdentityHelper */
+	protected IdentityHelper $IdentityHelper;
 
+	/** @param AdapterInterface $db */
 	public function __construct( AdapterInterface $db ) {
-		parent::__construct( self::$defaultName );
+		parent::__construct( 'admin:create' );
 		$this->db             = $db;
 		$this->AdminHelper    = new AdminHelper( $this->db );
 		$this->IdentityHelper = new IdentityHelper( $this->db );
@@ -55,6 +57,12 @@ class CreateAdminCommand extends Command {
 		return $this;
 	}
 
+	/**
+	 * @param InputInterface  $input
+	 * @param OutputInterface $output
+	 *
+	 * @return int
+	 */
 	protected function execute( InputInterface $input, OutputInterface $output ) {
 		try {
 			$name     = $input->getArgument( IFs::NAME );
@@ -67,7 +75,7 @@ class CreateAdminCommand extends Command {
 			$this->assertIdentityDoesntExist( $Identity );
 
 			$output->writeln( "<info>".F::createTimeStamp()."</info>|INFO|<comment>Checking if password '{$password}' meets requirements.</comment> " );
-			F::assertPasswordConstraints( $password );
+			F::assertPasswordLength( $password );
 
 			$output->writeln( "<info>".F::createTimeStamp()."</info>|INFO|<comment>Creating Identity.</comment>" );
 			$Identity = $this->IdentityHelper->create( $Identity );

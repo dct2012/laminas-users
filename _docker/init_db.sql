@@ -21,8 +21,8 @@ CREATE TABLE `admin_page_visits`
     PRIMARY KEY (`id`),
     KEY `admin_page_visits_admin_id_FK` (`admin_id`),
     KEY `admin_page_visits_page_visit_id_FK` (`page_visit_id`),
-    CONSTRAINT `admin_page_visits_admin_id_FK` FOREIGN KEY (`admin_id`) REFERENCES `admins` (`id`),
-    CONSTRAINT `admin_page_visits_page_visit_id_FK` FOREIGN KEY (`page_visit_id`) REFERENCES `page_visits` (`id`)
+    CONSTRAINT `admin_page_visits_admin_id_FK` FOREIGN KEY (`admin_id`) REFERENCES `admins` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `admin_page_visits_page_visit_id_FK` FOREIGN KEY (`page_visit_id`) REFERENCES `page_visits` (`id`) ON DELETE CASCADE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
@@ -45,7 +45,8 @@ CREATE TABLE `identities`
     `password`   varchar(255)     NOT NULL,
     `updated_on` timestamp        NULL     DEFAULT NULL ON UPDATE current_timestamp(),
     `created_on` timestamp        NOT NULL DEFAULT current_timestamp(),
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `identities_name_UN` (`name`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
@@ -96,8 +97,8 @@ CREATE TABLE `user_page_visits`
     PRIMARY KEY (`id`),
     KEY `user_page_visits_user_id_FK` (`user_id`),
     KEY `user_page_visits_page_visit_id_FK` (`page_visit_id`),
-    CONSTRAINT `user_page_visits_page_visit_id_FK` FOREIGN KEY (`page_visit_id`) REFERENCES `page_visits` (`id`),
-    CONSTRAINT `user_page_visits_user_id_FK` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+    CONSTRAINT `user_page_visits_page_visit_id_FK` FOREIGN KEY (`page_visit_id`) REFERENCES `page_visits` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `user_page_visits_user_id_FK` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
