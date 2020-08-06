@@ -4,10 +4,10 @@ declare( strict_types = 1 );
 
 namespace App\Model;
 
-use App\Model\Traits\{TraitComposition, TraitIdentityComposite};
+use App\Model\Traits\{TraitComposition, TraitIdentityComposite, TraitLoginComposite};
 
 class Admin implements ModelInterface {
-	use TraitComposition, TraitIdentityComposite;
+	use TraitComposition, TraitIdentityComposite, TraitLoginComposite;
 
 	/**
 	 * @param Identity $Identity

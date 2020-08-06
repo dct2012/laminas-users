@@ -19,6 +19,6 @@ class IndexControllerFactory implements FactoryInterface {
 	 * @return IndexController
 	 */
 	public function __invoke( ContainerInterface $C, $requestedName, ?array $options = null ): IndexController {
-		return new IndexController( $C->get( AdapterInterface::class ), $C->get( SessionManager::class ), $C->get( 'FormElementManager' ) );
+		return new IndexController( $C->get( AdapterInterface::class ), $C->get( 'FormElementManager' ), $C->get( SessionManager::class ) );
 	}
 }

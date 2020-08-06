@@ -4,6 +4,7 @@ declare( strict_types = 1 );
 
 namespace App\Controller;
 
+use Exception;
 use Laminas\Http\Response;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\{Sql, Update};
@@ -118,80 +119,86 @@ abstract class AbstractHasIdentityController extends AbstractController {
 
 	/** @return Response|ViewModel */
 	public function loginAction() {
-		$Response = $this->ensureLoggedOut();
-		if( !empty( $Response ) ) {
-			return $Response;
-		}
-		$Form = $this->getForm( $this->loginFormClassName );
-		if( !$this->getRequest()->isPost() ) {
-			$this->PageVisitHelper->create( $this->createPageVisit( $this->loginRoute ) );
+		try {
+			$this->assertLoggedOut();
 
-			return new ViewModel( [ 'Form' => $Form ] );
-		}
-		$Response = $this->validateForm( $Form );
-		if( !empty( $Response ) ) {
-			return $Response;
-		}
-		$data     = $Form->getData();
-		$name     = $data[ IFs::NAME ];
-		$password = $data[ IFs::PASSWORD ];
-		$Response = $this->authenticateLogin( $name, $password );
-		if( !empty( $Response ) ) {
-			return $Response;
-		}
+			$Form = $this->getForm( $this->loginFormClassName );
 
-		$Identity = $this->IdentityHelper->read( new Identity( $name, $password ) );
-		$Model    = $this->ModelHelper->read( $this->createNewModel( $Identity ), [ AHIFs::IDENTITY_ID => $Identity->getId() ] );
-		$this->updateNullLogouts( $Model );
+			if( $this->getRequest()->isPost() ) {
+				$this->validateForm( $Form );
 
-		$ModelLogin = $this->ModelLoginHelper->create( $this->createNewModelLogin( $Model, $this->LoginHelper->create( $this->createLogin() ) ) );
-		$this->getAuthenticationService()->getStorage()->write( $this->getModelFromModelLogin( $ModelLogin )->setLogin( $ModelLogin->getLogin() ) );
-		$this->getFlashMessenger()->addSuccessMessage( 'Successfully Logged In.' );
+				$data     = $Form->getData();
+				$name     = $data[ IFs::NAME ];
+				$password = $data[ IFs::PASSWORD ];
+
+				$this->authenticateLogin( $name, $password );
+
+				$Identity = $this->IdentityHelper->read( new Identity( $name, $password ) );
+				$Model    = $this->ModelHelper->read( $this->createNewModel( $Identity ), [ AHIFs::IDENTITY_ID => $Identity->getId() ] );
+
+				$this->updateNullLogouts( $Model );
+
+				$ModelLogin = $this->ModelLoginHelper->create( $this->createNewModelLogin( $Model, $this->LoginHelper->create( $this->createLogin() ) ) );
+				$this->getAuthenticationService()->getStorage()->write( $this->getModelFromModelLogin( $ModelLogin )->setLogin( $ModelLogin->getLogin() ) );
+				$this->getFlashMessenger()->addSuccessMessage( 'Successfully Logged In.' );
+			} else {
+				$this->PageVisitHelper->create( $this->createPageVisit( $this->loginRoute ) );
+
+				return new ViewModel( [ 'Form' => $Form ] );
+			}
+		} catch( Exception $e ) {
+			$this->getFlashMessenger()->addErrorMessage( $e->getMessage() );
+		}
 
 		return $this->redirect()->toRoute( $this->infoRoute );
 	}
 
 	/** @return Response|ViewModel */
 	public function logoutAction() {
-		$Response = $this->ensureLoggedIn( $this->loginRoute, 'You have to login before you can logout!' );
-		if( !empty( $Response ) ) {
-			return $Response;
-		}
-		if( !$this->getRequest()->isPost() ) {
-			return $this->redirect()->refresh();
-		}
-		$Response = $this->validateForm( $this->getForm( $this->logoutFormClassName ) );
-		if( !empty( $Response ) ) {
-			return $Response;
-		}
+		try {
+			$this->assertLoggedIn( 'You have to login before you can logout!' );
 
-		/** @var Admin|User $Model */
-		$Model = $this->getAuthenticationService()->getIdentity();
-		$this->LoginHelper->update( $Model->getLogin() );
-		$this->getAuthenticationService()->clearIdentity();
-		$this->getFlashMessenger()->addSuccessMessage( 'Successfully Logged Out.' );
+			if( $this->getRequest()->isPost() ) {
+				$this->validateForm( $this->getForm( $this->logoutFormClassName ) );
+
+				/** @var Admin|User $Model */
+				$Model = $this->getAuthenticationService()->getIdentity();
+				$this->LoginHelper->update( $Model->getLogin() );
+				$this->getAuthenticationService()->clearIdentity();
+				$this->getFlashMessenger()->addSuccessMessage( 'Successfully Logged Out.' );
+			} else {
+				return $this->redirect()->refresh();
+			}
+		} catch( Exception $e ) {
+			$this->getFlashMessenger()->addErrorMessage( $e->getMessage() );
+		}
 
 		return $this->redirect()->toRoute( $this->loginRoute );
 	}
 
 	/** @return Response|ViewModel */
 	public function infoAction() {
-		$Response = $this->ensureLoggedIn( $this->loginRoute, 'You have to be logged as a admin to view admin info!' );
-		if( !empty( $Response ) ) {
-			return $Response;
+		try {
+			$this->assertLoggedIn( 'You have to be logged in to view user info!' );
+
+			/* @var Admin|User $Model */
+			$Model       = $this->getAuthenticationService()->getIdentity();
+			$modelLogins = $this->ModelLoginHelper->read( $this->createNewModelLogin( $Model, $Model->getLogin() ), [ AHLFs::LOGIN_ID => $Model->getLogin()->getId() ] );
+			$this->PageVisitHelper->create( $this->createPageVisit( $this->infoRoute ) );
+
+			return new ViewModel( [
+				'Form'                                                  => $this->getForm( $this->infoFormClassName ),
+				$this->isAdminController() ? 'Admin' : 'User'           => $Model,
+				$this->isAdminController() ? 'AdminLogin' : 'UserLogin' => ( is_array( $modelLogins ) && count( $modelLogins ) > 1 )
+					? $modelLogins[ 1 ]
+					: null
+			] );
+		} catch( Exception $e ) {
+			$this->getFlashMessenger()->addErrorMessage( $e->getMessage() );
+
+			return $this->redirect()->toRoute( $this->isAdminController()
+				? Routes::ADMIN_LOGIN
+				: Routes::USER_LOGIN );
 		}
-
-		/* @var Admin|User $Model */
-		$Model       = $this->getAuthenticationService()->getIdentity();
-		$modelLogins = $this->ModelLoginHelper->read( $this->createNewModelLogin( $Model, $Model->getLogin() ), [ AHLFs::LOGIN_ID => $Model->getLogin()->getId() ] );
-		$this->PageVisitHelper->create( $this->createPageVisit( $this->infoRoute ) );
-
-		return new ViewModel( [
-			'Form'                                                  => $this->getForm( $this->infoFormClassName ),
-			$this->isAdminController() ? 'Admin' : 'User'           => $Model,
-			$this->isAdminController() ? 'AdminLogin' : 'UserLogin' => ( is_array( $modelLogins ) && count( $modelLogins ) > 1 )
-				? $modelLogins[ 1 ]
-				: null
-		] );
 	}
 }

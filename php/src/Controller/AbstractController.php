@@ -52,19 +52,16 @@ class AbstractController extends AbstractActionController {
 	 * @param string $name
 	 * @param string $password
 	 *
-	 * @return ?Response
+	 * @return self
+	 * @throws Exception
 	 */
-	protected function authenticateLogin( string $name, string $password ): ?Response {
+	protected function authenticateLogin( string $name, string $password ): self {
 		$Result = $this->getAuthenticationService()->authenticate( $this->getAuthenticationAdapter()->setIdentity( $name )->setCredential( $password ) );
-		if( $Result->isValid() ) {
-			return null;
+		if( !$Result->isValid() ) {
+			throw new Exception( implode( '', $Result->getMessages() ) );
 		}
 
-		foreach( $Result->getMessages() as $error ) {
-			$this->getFlashMessenger()->addErrorMessage( $error );
-		}
-
-		return $this->redirect()->refresh();
+		return $this;
 	}
 
 	/** @return Login */
@@ -137,115 +134,100 @@ class AbstractController extends AbstractActionController {
 	 * @param string $right
 	 * @param string $errorMsg
 	 *
-	 * @return ?Response
+	 * @return self
+	 * @throws Exception
 	 */
-	protected function ensureIdentical( string $left, string $right, string $errorMsg = 'Passwords are not identical!' ): ?Response {
-		if( ( new Identical( $left ) )->isValid( $right ) ) {
-			return null;
+	protected function assertIdentical( string $left, string $right, string $errorMsg = 'Passwords are not identical!' ): self {
+		if( !( new Identical( $left ) )->isValid( $right ) ) {
+			throw new Exception( $errorMsg );
 		}
 
-		$this->getFlashMessenger()->addErrorMessage( $errorMsg );
-
-		return $this->redirect()->refresh();
+		return $this;
 	}
 
 	/**
-	 * @param string $redirect
+	 * @param string $left
+	 * @param string $right
 	 * @param string $errorMsg
 	 *
-	 * @return ?Response
+	 * @return self
+	 * @throws Exception
 	 */
-	protected function ensureLoggedIn( string $redirect, string $errorMsg ): ?Response {
-		if( $this->getAuthenticationService()->hasIdentity() ) {
-			return null;
+	protected function assertNotIdentical( string $left, string $right, string $errorMsg = 'Fields are identical!' ): self {
+		if( ( new Identical( $left ) )->isValid( $right ) ) {
+			throw new Exception( $errorMsg );
 		}
 
-		$this->getFlashMessenger()->addErrorMessage( $errorMsg );
-
-		return $this->redirect()->toRoute( $redirect );
+		return $this;
 	}
 
-	/** @return ?Response */
-	protected function ensureLoggedOut(): ?Response {
+	/**
+	 * @param string $errorMsg
+	 *
+	 * @return self
+	 * @throws Exception
+	 */
+	protected function assertLoggedIn( string $errorMsg = 'You must be logged in to perform that action.' ): self {
 		if( !$this->getAuthenticationService()->hasIdentity() ) {
-			return null;
+			throw new Exception( $errorMsg );
 		}
 
-		$this->getFlashMessenger()->addInfoMessage( 'You are already logged in.' );
+		return $this;
+	}
 
-		return $this->redirect()->toRoute( 'user' );
+	/**
+	 * @param string $errorMsg
+	 *
+	 * @return self
+	 * @throws Exception
+	 */
+	protected function assertLoggedOut( string $errorMsg = 'You are already logged in.' ): self {
+		if( $this->getAuthenticationService()->hasIdentity() ) {
+			throw new Exception( $errorMsg );
+		}
+
+		return $this;
 	}
 
 	/**
 	 * @param string $password
 	 *
-	 * @return ?Response
+	 * @return self
+	 * @throws Exception
 	 */
-	protected function ensurePasswordConstraints( string $password ): ?Response {
-		try {
-			F::assertPasswordConstraints( $password );
-		} catch( Exception $e ) {
-			$this->getFlashMessenger()->addErrorMessage( $e->getMessage() );
+	protected function assertPasswordLength( string $password ): self {
+		F::assertPasswordLength( $password );
 
-			return $this->redirect()->refresh();
-		}
-
-		return null;
-	}
-
-	/**
-	 * @param callable $func
-	 * @param User     $User
-	 *
-	 * @return ?Response
-	 */
-	protected function execUserFunc( callable $func, User $User ): ?Response {
-		try {
-			$func( $User );
-		} catch( Exception $e ) {
-			$this->getFlashMessenger()->addErrorMessage( $e->getMessage() );
-
-			return $this->redirect()->refresh();
-		}
-
-		return null;
+		return $this;
 	}
 
 	/**
 	 * @param Form $Form
 	 *
-	 * @return ?Response
+	 * @return self
+	 * @throws Exception
 	 */
-	protected function validateForm( Form $Form ): ?Response {
-		$Form->setData( $this->getRequest()->getPost() );
-
-		if( $Form->isValid() ) {
-			return null;
+	protected function validateForm( Form $Form ): self {
+		if( !$Form->setData( $this->getRequest()->getPost() )->isValid() ) {
+			throw new Exception( implode( '', $Form->getMessages() ) );
 		}
 
-		foreach( $Form->getMessages() as $error ) {
-			$this->getFlashMessenger()->addErrorMessage( $error );
-		}
-
-		return $this->redirect()->refresh();
+		return $this;
 	}
 
 	/**
 	 * @param string $username
 	 * @param string $password
 	 *
-	 * @return ?Response
+	 * @return self
+	 * @throws Exception
 	 */
-	protected function validatePassword( string $username, string $password ): ?Response {
+	protected function validatePassword( string $username, string $password ): self {
 		$Result = $this->getAuthenticationAdapter()->setIdentity( $username )->setCredential( $password )->authenticate();
-		if( $Result->isValid() ) {
-			return null;
+		if( !$Result->isValid() ) {
+			throw new Exception( implode( '', $Result->getMessages() ) );
 		}
 
-		foreach( $Result->getMessages() as $error ) {
-			$this->getFlashMessenger()->addErrorMessage( $error );
-		}
-
-		return $this->redirect()->refresh();
+		return $this;
 	}
 }

@@ -4,7 +4,7 @@ declare( strict_types = 1 );
 
 namespace App\Model;
 
-use App\Model\Traits\{TraitComposition, TraitUserComposite, TraitLoginComposite}
+use App\Model\Traits\{TraitComposition, TraitUserComposite, TraitLoginComposite};
 
 class UserLogin implements ModelInterface {
 	use TraitComposition, TraitUserComposite, TraitLoginComposite;
