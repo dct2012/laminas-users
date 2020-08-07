@@ -4,6 +4,10 @@ declare( strict_types = 1 );
 
 namespace App\Model\Values;
 
-class UserPageVisitFields extends AbstractHasPageVisitsFields {
-	const USER_ID = 'user_id';
+use App\Enum\AbstractEnum;
+
+class UserPageVisitFields extends AbstractEnum {
+	const ID            = 'id';
+	const USER_ID       = 'user_id';
+	const PAGE_VISIT_ID = 'page_visit_id';
 }

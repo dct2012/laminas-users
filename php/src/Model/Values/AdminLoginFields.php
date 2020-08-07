@@ -4,6 +4,10 @@ declare( strict_types = 1 );
 
 namespace App\Model\Values;
 
-class AdminLoginFields extends AbstractHasLoginFields {
+use App\Enum\AbstractEnum;
+
+class AdminLoginFields extends AbstractEnum {
+	const ID       = 'id';
 	const ADMIN_ID = 'admin_id';
+	const LOGIN_ID = 'login_id';
 }

@@ -4,4 +4,9 @@ declare( strict_types = 1 );
 
 namespace App\Model\Values;
 
-class AdminFields extends AbstractHasIdentityFields { }
+use App\Enum\AbstractEnum;
+
+class AdminFields extends AbstractEnum {
+	const ID          = 'id';
+	const IDENTITY_ID = 'identity_id';
+}

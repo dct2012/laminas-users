@@ -45,14 +45,9 @@ class AdminUpdateCommand extends Command {
 	 * @return Identity
 	 */
 	protected function assertIdentityExist( Identity $Identity ): Identity {
-		$name = $Identity->getName();
-
-		try {
-			$Identity = $this->IdentityHelper->read( $Identity, [ IFs::NAME => $name ] );
-		} catch( Exception $e ) {
-		}
-
-		if( empty( $Identity->getId() ) ) {
+		$name     = $Identity->getName();
+		$Identity = $this->IdentityHelper->read( $Identity, [ IFs::NAME => $name ] );
+		if( empty( $Identity ) || empty( $Identity->getId() ) ) {
 			throw new RuntimeException( "Identity with name '{$name}' doesn't exists!" );
 		}
 

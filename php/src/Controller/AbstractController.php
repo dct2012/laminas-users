@@ -6,14 +6,16 @@ namespace App\Controller;
 
 use Exception;
 use App\Functions as F;
-use App\Model\Helper\PageVisitHelper;
-use App\Model\{Login, PageVisit, User};
+use App\Model\{Admin, Login, PageVisit, User};
+use App\Model\Helper\{LoginHelper, PageVisitHelper};
 use Laminas\Form\Form;
-use Laminas\Http\Response;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Validator\Identical;
 use Laminas\Session\SessionManager;
+use App\Exception\RefreshException;
+use App\Exception\RedirectUserException;
 use Laminas\Mvc\Plugin\Identity\Identity;
+use App\Exception\RedirectAdminException;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
@@ -25,6 +27,8 @@ class AbstractController extends AbstractActionController {
 	protected Adapter $db;
 	/** @var Identity */
 	protected Identity $Identity;
+	/** @var LoginHelper */
+	protected LoginHelper $LoginHelper;
 	/** @var FormManager */
 	protected FormManager $FormManager;
 	/** @var SessionManager */
@@ -45,7 +49,89 @@ class AbstractController extends AbstractActionController {
 		$this->db              = $db;
 		$this->FormManager     = $FormManager;
 		$this->SessionManager  = $SessionManager;
+		$this->LoginHelper     = new LoginHelper( $this->db );
 		$this->PageVisitHelper = new PageVisitHelper( $this->db );
+	}
+
+	/**
+	 * @param string $left
+	 * @param string $right
+	 * @param string $errorMsg
+	 *
+	 * @return self
+	 * @throws RefreshException
+	 */
+	protected function assertIdentical( string $left, string $right, string $errorMsg ): self {
+		if( !( new Identical( $left ) )->isValid( $right ) ) {
+			throw new RefreshException( $errorMsg );
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param Exception $Exception
+	 *
+	 * @return self
+	 * @throws Exception
+	 */
+	protected function assertLoggedIn( Exception $Exception ): self {
+		if( !$this->getAuthenticationService()->hasIdentity() ) {
+			throw $Exception;
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param string $errorMsg
+	 *
+	 * @return self
+	 * @throws RedirectAdminException
+	 * @throws RedirectUserException
+	 */
+	protected function assertLoggedOut( string $errorMsg = 'You are already logged in!' ): self {
+		if( $this->getAuthenticationService()->hasIdentity() ) {
+			if( $this->isAdmin() ) {
+				throw new RedirectAdminException( $errorMsg );
+			}
+
+			throw new RedirectUserException( $errorMsg );
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param string $left
+	 * @param string $right
+	 * @param string $errorMsg
+	 *
+	 * @return self
+	 * @throws RefreshException
+	 */
+	protected function assertNotIdentical( string $left, string $right, string $errorMsg ): self {
+		if( ( new Identical( $left ) )->isValid( $right ) ) {
+			throw new RefreshException( $errorMsg );
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param string $password
+	 *
+	 * @return self
+	 * @throws RefreshException
+	 */
+	protected function assertPasswordLength( string $password ): self {
+		try {
+			F::assertPasswordLength( $password );
+		} catch( Exception $e ) {
+			throw new RefreshException( $e->getMessage() );
+		}
+
+		return $this;
 	}
 
 	/**
@@ -53,12 +139,12 @@ class AbstractController extends AbstractActionController {
 	 * @param string $password
 	 *
 	 * @return self
-	 * @throws Exception
+	 * @throws RefreshException
 	 */
 	protected function authenticateLogin( string $name, string $password ): self {
 		$Result = $this->getAuthenticationService()->authenticate( $this->getAuthenticationAdapter()->setIdentity( $name )->setCredential( $password ) );
 		if( !$Result->isValid() ) {
-			throw new Exception( implode( '', $Result->getMessages() ) );
+			throw new RefreshException( implode( '', $Result->getMessages() ) );
 		}
 
 		return $this;
@@ -66,7 +152,7 @@ class AbstractController extends AbstractActionController {
 
 	/** @return Login */
 	protected function createLogin(): Login {
-		return new Login( $this->getIpAddress(), $this->getUserAgent() );
+		return $this->LoginHelper->create( new Login( $this->getIpAddress(), $this->getUserAgent() ) );
 	}
 
 	/**
@@ -75,7 +161,17 @@ class AbstractController extends AbstractActionController {
 	 * @return PageVisit
 	 */
 	protected function createPageVisit( string $page ): PageVisit {
-		return new PageVisit( $page, $this->getIpAddress(), $this->getUserAgent() );
+		return $this->PageVisitHelper->create( new PageVisit( $page, $this->getIpAddress(), $this->getUserAgent() ) );
+	}
+
+	/** @param string $msg */
+	protected function flashMessengerError( string $msg ) {
+		$this->getFlashMessenger()->addErrorMessage( $msg );
+	}
+
+	/** @param string $msg */
+	protected function flashMessengerSuccess( string $msg ) {
+		$this->getFlashMessenger()->addSuccessMessage( $msg );
 	}
 
 	/** @return AbstractAdapter */
@@ -86,19 +182,12 @@ class AbstractController extends AbstractActionController {
 	/** @return AuthenticationService */
 	protected function getAuthenticationService(): AuthenticationService {
 		if( empty( $this->AuthenticationService ) ) {
-			$this->AuthenticationService = $this->getIdentity()->getAuthenticationService();
+			/** @var AuthenticationService $AuthenticationService */
+			$AuthenticationService       = $this->getIdentity()->getAuthenticationService();
+			$this->AuthenticationService = $AuthenticationService;
 		}
 
 		return $this->AuthenticationService;
-	}
-
-	/** @return Identity */
-	protected function getIdentity(): Identity {
-		if( empty( $this->Identity ) ) {
-			$this->Identity = $this->plugin( 'identity' );
-		}
-
-		return $this->Identity;
 	}
 
 	/** @return FlashMessenger */
@@ -119,6 +208,15 @@ class AbstractController extends AbstractActionController {
 		return $this->FormManager->get( $formClass );
 	}
 
+	/** @return Identity */
+	protected function getIdentity(): Identity {
+		if( empty( $this->Identity ) ) {
+			$this->Identity = $this->plugin( 'identity' );
+		}
+
+		return $this->Identity;
+	}
+
 	/** @return string */
 	protected function getIpAddress(): string {
 		return $_SERVER[ 'REMOTE_ADDR' ];
@@ -129,87 +227,25 @@ class AbstractController extends AbstractActionController {
 		return $_SERVER[ 'HTTP_USER_AGENT' ];
 	}
 
-	/**
-	 * @param string $left
-	 * @param string $right
-	 * @param string $errorMsg
-	 *
-	 * @return self
-	 * @throws Exception
-	 */
-	protected function assertIdentical( string $left, string $right, string $errorMsg = 'Passwords are not identical!' ): self {
-		if( !( new Identical( $left ) )->isValid( $right ) ) {
-			throw new Exception( $errorMsg );
-		}
-
-		return $this;
+	/** @return bool */
+	protected function isAdmin(): bool {
+		return $this->getAuthenticationService()->getIdentity() instanceof Admin;
 	}
 
-	/**
-	 * @param string $left
-	 * @param string $right
-	 * @param string $errorMsg
-	 *
-	 * @return self
-	 * @throws Exception
-	 */
-	protected function assertNotIdentical( string $left, string $right, string $errorMsg = 'Fields are identical!' ): self {
-		if( ( new Identical( $left ) )->isValid( $right ) ) {
-			throw new Exception( $errorMsg );
-		}
-
-		return $this;
-	}
-
-	/**
-	 * @param string $errorMsg
-	 *
-	 * @return self
-	 * @throws Exception
-	 */
-	protected function assertLoggedIn( string $errorMsg = 'You must be logged in to perform that action.' ): self {
-		if( !$this->getAuthenticationService()->hasIdentity() ) {
-			throw new Exception( $errorMsg );
-		}
-
-		return $this;
-	}
-
-	/**
-	 * @param string $errorMsg
-	 *
-	 * @return self
-	 * @throws Exception
-	 */
-	protected function assertLoggedOut( string $errorMsg = 'You are already logged in.' ): self {
-		if( $this->getAuthenticationService()->hasIdentity() ) {
-			throw new Exception( $errorMsg );
-		}
-
-		return $this;
-	}
-
-	/**
-	 * @param string $password
-	 *
-	 * @return self
-	 * @throws Exception
-	 */
-	protected function assertPasswordLength( string $password ): self {
-		F::assertPasswordLength( $password );
-
-		return $this;
+	/** @return bool */
+	protected function isUser(): bool {
+		return $this->getAuthenticationService()->getIdentity() instanceof User;
 	}
 
 	/**
 	 * @param Form $Form
 	 *
 	 * @return self
-	 * @throws Exception
+	 * @throws RefreshException
 	 */
 	protected function validateForm( Form $Form ): self {
 		if( !$Form->setData( $this->getRequest()->getPost() )->isValid() ) {
-			throw new Exception( implode( '', $Form->getMessages() ) );
+			throw new RefreshException( implode( '', $Form->getMessages() ) );
 		}
 
 		return $this;
@@ -220,12 +256,12 @@ class AbstractController extends AbstractActionController {
 	 * @param string $password
 	 *
 	 * @return self
-	 * @throws Exception
+	 * @throws RefreshException
 	 */
 	protected function validatePassword( string $username, string $password ): self {
 		$Result = $this->getAuthenticationAdapter()->setIdentity( $username )->setCredential( $password )->authenticate();
 		if( !$Result->isValid() ) {
-			throw new Exception( implode( '', $Result->getMessages() ) );
+			throw new RefreshException( implode( '', $Result->getMessages() ) );
 		}
 
 		return $this;

@@ -22,7 +22,7 @@ class InfoForm extends Form {
 			'name'    => IFs::NAME,
 			'type'    => 'text',
 			'options' => [
-				'label' => 'ame:',
+				'label' => 'Name:',
 			],
 		] );
 		$this->add( [

@@ -1,5 +1,12 @@
 <?php
-/** @var Laminas\View\Renderer\PhpRenderer $this */
+
+use App\Model\User;
+use App\Enum\Routes;
+use Laminas\Form\View\HelperTrait;
+use Laminas\View\Renderer\PhpRenderer;
+
+/** @var PhpRenderer|HelperTrait $this */
+
 $title = 'Laminas Users';
 ?>
 <?= $this->doctype() ?>
@@ -37,28 +44,38 @@ $title = 'Laminas Users';
         </div>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-				<?php if( $this->identity() ) { ?>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/user">User <span class="sr-only">(current)</span></a>
+				<?php
+				$Identity = $this->identity();
+				if( $Identity ) {
+					if( $Identity instanceof User ) { ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/<?= Routes::USER ?>">User</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/<?= Routes::USER_UPDATE ?>">Change Password</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/<?= Routes::USER_DELETE ?>">Delete User</a>
+                        </li>
+					<?php } else { ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/<?= Routes::ADMIN ?>">Admin</a>
+                        </li>
+					<?php }
+				} else { ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/<?= Routes::USER_LOGIN ?>">Login</a>
                     </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/user/update">Change Password</a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/user/delete">Delete User</a>
-                    </li>
-				<?php } else { ?>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/user/login">Login</a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/user/signup">Sign Up</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/<?= Routes::USER_SIGNUP ?>">Sign Up</a>
                     </li>
 				<?php } ?>
             </ul>
         </div>
-		<?php if( $this->identity() ) { ?>
-            <form action="/user/logout" method="post">
+		<?php
+		$Identity = $this->identity();
+		if( $Identity ) { ?>
+            <form action="/<?= ( $Identity instanceof User ) ? Routes::USER_LOGOUT : Routes::ADMIN_LOGOUT; ?>" method="post">
                 <button type="submit" class="btn btn-danger">Logout</button>
             </form>
 		<?php } ?>

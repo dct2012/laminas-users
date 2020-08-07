@@ -1,6 +1,5 @@
 <?php
 
-use App\Enum\Routes;
 use App\Form\User\InfoForm;
 use App\Model\{Admin, AdminLogin};
 use App\Model\Values\{IdentityFields as IFs, AdminFields as AFs};
@@ -15,12 +14,12 @@ use Laminas\View\Renderer\PhpRenderer;
 $title = 'Admin Info';
 $this->headTitle( $title );
 
-$adminID    = $Form->get( AFs::ID )
+$adminID   = $Form->get( AFs::ID )
                   ->setAttribute( 'class', 'form-control' )
                   ->setAttribute( 'placeholder', 'ID' )
                   ->setAttribute( 'readonly', true )
                   ->setValue( $Admin->getId() );
-$name  = $Form->get( IFs::NAME )
+$name      = $Form->get( IFs::NAME )
                   ->setAttribute( 'class', 'form-control' )
                   ->setAttribute( 'placeholder', 'Admin Name' )
                   ->setAttribute( 'readonly', true )

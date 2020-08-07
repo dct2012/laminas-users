@@ -4,13 +4,13 @@ declare( strict_types = 1 );
 
 namespace App\Model\Helper;
 
+use App\Model\ModelInterface;
+use App\Exception\{DbOperationErrorException as ErrorException};
 use Laminas\Hydrator\ReflectionHydrator;
-use Laminas\Db\ResultSet\HydratingResultSet;
 use Laminas\Db\Adapter\AdapterInterface;
+use Laminas\Db\ResultSet\HydratingResultSet;
 use Laminas\Db\Adapter\Driver\ResultInterface;
 use Laminas\Db\Sql\{Delete, Insert, PreparableSqlInterface, Select, Sql, Update};
-use App\Model\ModelInterface;
-use App\Exception\{DbOperationErrorException as ErrorException, DbOperationHadNoAffectException as NoAffectException};
 
 abstract class AbstractHelper {
 	/** @var AdapterInterface */
@@ -37,9 +37,6 @@ abstract class AbstractHelper {
 		$Result = ( new Sql ( $this->db ) )->prepareStatementForSqlObject( $Statement )->execute();
 		if( !$Result instanceof ResultInterface ) {
 			throw new ErrorException( "Database error occurred during {$this::getTableName()} {$action} operation!" );
-		}
-		if( $Result->getAffectedRows() == 0 ) {
-			throw new NoAffectException( "Failed to {$action} on {$this::getTableName()}!" );
 		}
 
 		return $Result;

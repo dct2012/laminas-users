@@ -6,6 +6,4 @@ namespace App\Exception;
 
 use RuntimeException;
 
-class DbOperationHadNoAffectException extends RuntimeException {
-
-}
+class RedirectAdminLoginException extends RuntimeException { }

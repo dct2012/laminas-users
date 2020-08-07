@@ -4,10 +4,9 @@ declare( strict_types = 1 );
 
 namespace App\Model\Helper;
 
-use Laminas\Db\Adapter\AdapterInterface;
 use App\Model\User;
 use App\Model\Values\UserFields as UFs;
-use App\Model\Values\AbstractHasIdentityFields as AFs;
+use Laminas\Db\Adapter\AdapterInterface;
 
 class UserHelper extends AbstractHelper {
 	/** @var IdentityHelper */
@@ -38,7 +37,7 @@ class UserHelper extends AbstractHelper {
 	public function create( $Model, array $values = [] ) {
 		/** @var User $Model */
 		$Model = parent::create( $Model, empty( $values )
-			? [ AFs::IDENTITY_ID => $Model->getIdentityId() ]
+			? [ UFs::IDENTITY_ID => $Model->getIdentityId() ]
 			: $values );
 
 		return $Model;
@@ -51,11 +50,11 @@ class UserHelper extends AbstractHelper {
 	 *
 	 * @return User|array
 	 */
-	public function read( $Model, array $where = [], array $order = [ AFs::ID => 'ASC' ] ) {
+	public function read( $Model, array $where = [], array $order = [ UFs::ID => 'ASC' ] ) {
 		$Model = $Model->setIdentity( $this->IdentityHelper->read( $Model->getIdentity() ) );
 
 		return parent::read( $Model, empty( $where )
-			? [ AFs::IDENTITY_ID => $Model->getIdentityId() ]
+			? [ UFs::IDENTITY_ID => $Model->getIdentityId() ]
 			: $where,
 			$order );
 	}

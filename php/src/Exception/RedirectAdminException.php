@@ -6,4 +6,4 @@ namespace App\Exception;
 
 use RuntimeException;
 
-class DbOperationErrorException extends RuntimeException { }
+class RedirectAdminException extends RuntimeException { }
