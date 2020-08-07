@@ -13,3 +13,4 @@ $this->headTitle( 'Sitemap' );
         <?= htmlspecialchars( $this->navigation( 'navigation' )->sitemap()->setFormatOutput( true ) ); ?>
     </code>
 </pre>
+<?= $this->inlineScript()->prependFile( $this->basePath( 'js/highlightSitemap.bundle.js' ) ) ?>

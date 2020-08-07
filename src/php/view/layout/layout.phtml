@@ -102,6 +102,6 @@ $title = 'Laminas Users';
 	echo $this->content;
 	?>
 </div>
-<?= $this->inlineScript()->prependFile( $this->basePath( 'js/bundle.js' ) ) ?>
+<?= $this->inlineScript()->appendFile( $this->basePath( 'js/bootstrap.bundle.js' ) ) ?>
 </body>
 </html>

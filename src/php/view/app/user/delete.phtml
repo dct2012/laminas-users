@@ -1,34 +1,32 @@
 <?php
 
+use App\Model\User;
+use App\Enum\Routes;
+use App\Form\User\DeleteForm;
+use App\Model\Values\IdentityFields as IFs;
 use Laminas\Form\View\HelperTrait;
 use Laminas\View\Renderer\PhpRenderer;
-use App\Enum\Routes;
-use App\Form\User\InfoForm;
-use App\Model\Values\IdentityFields as IFs;
 
-/** @var InfoForm $Form */
+/** @var User $User */
+/** @var DeleteForm $Form */
 /** @var PhpRenderer|HelperTrait $this */
 
-$title = 'User Login';
+$title = 'Delete User';
 $this->headTitle( $title );
-
-$name = $Form->get( IFs::NAME )
-             ->setAttribute( 'class', 'form-control' )
-             ->setAttribute( 'required', true )
-             ->setAttribute( 'placeholder', 'Username' );
 
 $password = $Form->get( IFs::PASSWORD )
                  ->setAttribute( 'class', 'form-control toggle-password' )
                  ->setAttribute( 'required', true )
-                 ->setAttribute( 'placeholder', 'Password' );
+                 ->setAttribute( 'placeholder', 'Current Password' );
 
-$Submit = $Form->get( 'login' )
-               ->setAttribute( 'class', 'btn btn-primary' );
+$Submit = $Form->get( 'delete' )
+               ->setAttribute( 'class', 'btn btn-danger' );
 
-$Form->setAttribute( 'action', $this->url( Routes::USER_LOGIN, [ 'action' => 'login' ] ) )
+$Form->setAttribute( 'action', $this->url( Routes::USER_DELETE, [ 'action' => 'delete' ] ) )
      ->setAttribute( 'method', 'post' )
      ->setAttribute( 'autocomplete', 'off' )
      ->prepare();
+
 ?>
 <div class="card">
     <div class="card-header">
@@ -36,11 +34,10 @@ $Form->setAttribute( 'action', $this->url( Routes::USER_LOGIN, [ 'action' => 'lo
     </div>
     <div class="card-body">
 		<?= $this->form()->openTag( $Form ) ?>
-        <div class="form-group">
-			<?= $this->formLabel( $name ) ?>
-			<?= $this->formElement( $name ) ?>
-			<?= $this->formElementErrors()->render( $name, [ 'class' => 'help-block' ] ) ?>
+        <div class="alert alert-danger">
+            If you are sure you want to delete your user, enter your password and click Delete.
         </div>
+        <hr>
 
         <div class="form-group">
 			<?= $this->formLabel( $password ) ?>
@@ -57,7 +54,5 @@ $Form->setAttribute( 'action', $this->url( Routes::USER_LOGIN, [ 'action' => 'lo
         </div>
 		<?= $this->form()->closeTag() ?>
     </div>
-    <div class="card-footer text-muted">
-        Don't have an account? <a href="/<?= Routes::USER_SIGNUP ?>">Sign up</a>.
-    </div>
 </div>
+<?php $this->inlineScript()->appendFile( $this->basePath( 'js/togglePassword.bundle.js' ) ) ?>

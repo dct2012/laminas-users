@@ -1,6 +1,6 @@
 {
   "name": "dct2012/laminas-users",
-  "description": "User functionality built with Laminas.",
+  "description": "Site with multilevel user functionality.",
   "type": "project",
   "license": "BSD-3-Clause",
   "keywords": [
@@ -27,12 +27,12 @@
   },
   "autoload": {
     "psr-4": {
-      "App\\": "php/src/"
+      "App\\": "src/php/src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "AppTest\\": "php/test/"
+      "AppTest\\": "src/php/test/"
     }
   },
   "scripts": {

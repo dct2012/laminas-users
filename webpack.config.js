@@ -1,10 +1,14 @@
 const path = require('path');
 
 module.exports = {
-    entry: './js/src/index.js',
+    entry: {
+        bootstrap: './src/js/src/bootstrap.js',
+        highlightSitemap: './src/js/src/highlightSitemap.js',
+        togglePassword: './src/js/src/togglePassword.js',
+    },
     mode: 'production',
     output: {
-        filename: 'bundle.js',
+        filename: '[name].bundle.js',
         path: path.resolve(__dirname, 'public/js'),
     },
     module: {

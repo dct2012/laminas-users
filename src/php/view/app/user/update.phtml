@@ -78,3 +78,4 @@ $Form->setAttribute( 'action', $this->url( Routes::USER_UPDATE, [ 'action' => 'u
 		<?= $this->form()->closeTag() ?>
     </div>
 </div>
+<?php $this->inlineScript()->appendFile( $this->basePath( 'js/togglePassword.bundle.js' ) ) ?>
