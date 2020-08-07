@@ -12,7 +12,8 @@ class Routes extends AbstractEnum {
 	const USER_SIGNUP = 'user/signup';
 	const USER_UPDATE = 'user/update';
 
-	const ADMIN        = 'admin';
-	const ADMIN_LOGIN  = 'admin/login';
-	const ADMIN_LOGOUT = 'admin/logout';
+	const ADMIN         = 'admin';
+	const ADMIN_LOGIN   = 'admin/login';
+	const ADMIN_LOGOUT  = 'admin/logout';
+	const ADMIN_SITEMAP = 'admin/sitemap';
 }

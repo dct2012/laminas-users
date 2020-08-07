@@ -21,6 +21,7 @@
     "css-loader": "^4.2.0",
     "fibers": "^5.0.0",
     "file-loader": "^6.0.0",
+    "highlight.js": "^10.1.2",
     "jquery": "^3.5.1",
     "node-sass": "^4.14.1",
     "popper.js": "^1.16.1",

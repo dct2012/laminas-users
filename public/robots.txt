@@ -11,7 +11,7 @@ Disallow: /css/
 Disallow: /img/
 Disallow: /js/
 # Files
-Disallow: /web.config
+# Disallow: /web.config
 # Paths (clean URLs)
 Disallow: /user
 Disallow: /user/logout
@@ -24,3 +24,4 @@ Disallow: /user/logout/
 Disallow: /user/signup/
 Disallow: /user/update/
 Disallow: /user/login/
+Sitemap: /sitemap.xml

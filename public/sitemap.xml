@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>http://localhost/admin</loc>
+    </url>
+    <url>
+        <loc>http://localhost/admin/login</loc>
+    </url>
+    <url>
+        <loc>http://localhost/admin/sitemap</loc>
+    </url>
+    <url>
+        <loc>http://localhost/user</loc>
+    </url>
+    <url>
+        <loc>http://localhost/user/update</loc>
+    </url>
+    <url>
+        <loc>http://localhost/user/delete</loc>
+    </url>
+    <url>
+        <loc>http://localhost/user/login</loc>
+    </url>
+    <url>
+        <loc>http://localhost/user/signup</loc>
+    </url>
+</urlset>

@@ -38,7 +38,7 @@ return [
 				],
 				'may_terminate' => true,
 				'child_routes'  => [
-					'login'  => [
+					'login'   => [
 						'type'    => Literal::class,
 						'options' => [
 							'route'    => '/login',
@@ -48,13 +48,23 @@ return [
 							],
 						],
 					],
-					'logout' => [
+					'logout'  => [
 						'type'    => Literal::class,
 						'options' => [
 							'route'    => '/logout',
 							'defaults' => [
 								'controller' => AdminController::class,
 								'action'     => 'logout',
+							],
+						],
+					],
+					'sitemap' => [
+						'type'    => Literal::class,
+						'options' => [
+							'route'    => '/sitemap',
+							'defaults' => [
+								'controller' => AdminController::class,
+								'action'     => 'sitemap',
 							],
 						],
 					],
@@ -173,12 +183,13 @@ return [
 						'label'  => 'Login',
 						'route'  => Routes::ADMIN_LOGIN,
 						'action' => 'login'
+					],
+					[
+						'label'  => 'Sitemap',
+						'route'  => Routes::ADMIN_SITEMAP,
+						'action' => 'sitemap'
 					]
 				]
-			],
-			[
-				'label' => 'Home',
-				'route' => 'home',
 			],
 			[
 				'label' => 'User',

@@ -1,0 +1,15 @@
+<?php
+
+use Laminas\Form\View\HelperTrait;
+use Laminas\View\Renderer\PhpRenderer;
+
+/** @var PhpRenderer|HelperTrait $this */
+
+$this->headTitle( 'Sitemap' );
+
+?>
+<pre>
+    <code id="sitemap_code_block" lang="xml">
+        <?= htmlspecialchars( $this->navigation( 'navigation' )->sitemap()->setFormatOutput( true ) ); ?>
+    </code>
+</pre>

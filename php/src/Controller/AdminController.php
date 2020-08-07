@@ -228,6 +228,23 @@ class AdminController extends AbstractController {
 		}
 
 		return $this->redirect()->refresh();
+	}
 
+	/** @return Response|ViewModel */
+	public function sitemapAction() {
+		try {
+			$this->assertLoggedIn( new RedirectAdminLoginException( 'You have to be logged in to view admin info!' ) )
+			     ->assertIsAdmin();
+
+			return new ViewModel();
+		} catch( Exception $e ) {
+			$this->flashMessengerError( $e->getMessage() );
+
+			if( $e instanceof RedirectAdminLoginException ) {
+				return $this->redirect()->toRoute( Routes::ADMIN_LOGIN );
+			}
+
+			return $this->redirect()->toRoute( Routes::USER );
+		}
 	}
 }
