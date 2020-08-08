@@ -13,10 +13,20 @@ class DeleteForm extends Form {
 		parent::__construct( 'user_delete' );
 
 		$this->add( [
-			'name'    => IFs::PASSWORD,
-			'type'    => 'password',
-			'options' => [
-				'label' => 'Current Password:',
+			'name'       => IFs::PASSWORD,
+			'type'       => 'password',
+			'attributes' => [
+				'id'           => IFs::PASSWORD,
+				'class'        => 'input toggle-password',
+				'required'     => 'required',
+				'placeholder'  => 'Current Password',
+				'autocomplete' => 'current-password',
+			],
+			'options'    => [
+				'label'            => 'Current Password:',
+				'label_attributes' => [
+					'class' => 'label',
+				],
 			],
 		] );
 		$this->add( new Csrf( 'security' ) );
@@ -26,6 +36,7 @@ class DeleteForm extends Form {
 			'attributes' => [
 				'value' => 'Delete',
 				'id'    => 'deleteButton',
+				'class' => 'button is-block is-danger',
 			],
 		] );
 	}

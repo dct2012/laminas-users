@@ -16,24 +16,54 @@ class UpdateForm extends Form {
 		parent::__construct( 'user_update' );
 
 		$this->add( [
-			'name'    => self::CURRENT_PASSWORD,
-			'type'    => 'password',
-			'options' => [
-				'label' => 'Current Password:',
+			'name'       => self::CURRENT_PASSWORD,
+			'type'       => 'password',
+			'attributes' => [
+				'id'           => self::CURRENT_PASSWORD,
+				'class'        => 'input toggle-password',
+				'required'     => 'required',
+				'placeholder'  => 'Password',
+				'autocomplete' => 'current-password',
+			],
+			'options'    => [
+				'label'            => 'Current Password:',
+				'label_attributes' => [
+					'class' => 'label',
+				],
 			],
 		] );
 		$this->add( [
-			'name'    => IFs::PASSWORD,
-			'type'    => 'password',
-			'options' => [
-				'label' => 'New Password:',
+			'name'       => IFs::PASSWORD,
+			'type'       => 'password',
+			'attributes' => [
+				'id'           => IFs::PASSWORD,
+				'class'        => 'input toggle-password',
+				'required'     => 'required',
+				'placeholder'  => 'Password',
+				'autocomplete' => 'new-password',
+			],
+			'options'    => [
+				'label'            => 'New Password:',
+				'label_attributes' => [
+					'class' => 'label',
+				],
 			],
 		] );
 		$this->add( [
-			'name'    => self::VERIFY_NEW_PASSWORD,
-			'type'    => 'password',
-			'options' => [
-				'label' => 'Verify New Password:',
+			'name'       => self::VERIFY_NEW_PASSWORD,
+			'type'       => 'password',
+			'attributes' => [
+				'id'           => self::VERIFY_NEW_PASSWORD,
+				'class'        => 'input toggle-password',
+				'required'     => 'required',
+				'placeholder'  => 'Password',
+				'autocomplete' => 'new-password',
+			],
+			'options'    => [
+				'label'            => 'Verify New Password:',
+				'label_attributes' => [
+					'class' => 'label',
+				],
 			],
 		] );
 		$this->add( new Csrf( 'security' ) );
@@ -43,6 +73,8 @@ class UpdateForm extends Form {
 			'attributes' => [
 				'value' => 'Update',
 				'id'    => 'updateButton',
+				'class' => 'button is-block is-info',
+
 			],
 		] );
 	}

@@ -13,17 +13,37 @@ class LoginForm extends Form {
 		parent::__construct( 'admin_login' );
 
 		$this->add( [
-			'name'    => IFs::NAME,
-			'type'    => 'text',
-			'options' => [
-				'label' => 'Admin name:',
+			'name'       => IFs::NAME,
+			'type'       => 'text',
+			'attributes' => [
+				'id'           => IFs::NAME,
+				'class'        => 'input',
+				'required'     => 'required',
+				'autocomplete' => 'username',
+				'placeholder'  => 'Admin Name',
+			],
+			'options'    => [
+				'label'            => 'Admin Name:',
+				'label_attributes' => [
+					'class' => 'label',
+				],
 			],
 		] );
 		$this->add( [
-			'name'    => IFs::PASSWORD,
-			'type'    => 'password',
-			'options' => [
-				'label' => 'Password:',
+			'name'       => IFs::PASSWORD,
+			'type'       => 'password',
+			'attributes' => [
+				'id'           => IFs::PASSWORD,
+				'required'     => 'required',
+				'placeholder'  => 'Password',
+				'autocomplete' => 'current-password',
+				'class'        => 'input toggle-password',
+			],
+			'options'    => [
+				'label'            => 'Password:',
+				'label_attributes' => [
+					'class' => 'label',
+				],
 			],
 		] );
 		$this->add( new Csrf( 'security' ) );
@@ -33,6 +53,7 @@ class LoginForm extends Form {
 			'attributes' => [
 				'value' => 'Login',
 				'id'    => 'loginButton',
+				'class' => 'button is-block is-info',
 			],
 		] );
 	}

@@ -14,68 +14,64 @@ use Laminas\View\Renderer\PhpRenderer;
 $title = 'Update User Password';
 $this->headTitle( $title );
 
-$currentPassword = $Form->get( UpdateForm::CURRENT_PASSWORD )
-                        ->setAttribute( 'class', 'form-control toggle-password' )
-                        ->setAttribute( 'required', true )
-                        ->setAttribute( 'placeholder', 'Current Password' );
+$currentPassword   = $Form->get( UpdateForm::CURRENT_PASSWORD );
+$newPassword       = $Form->get( IFs::PASSWORD );
+$verifyNewPassword = $Form->get( UpdateForm::VERIFY_NEW_PASSWORD );
+$submit            = $Form->get( 'update' );
 
-$newPassword = $Form->get( IFs::PASSWORD )
-                    ->setAttribute( 'class', 'form-control toggle-password' )
-                    ->setAttribute( 'required', true )
-                    ->setAttribute( 'placeholder', 'New Password' );
-
-$verifyNewPassword = $Form->get( UpdateForm::VERIFY_NEW_PASSWORD )
-                          ->setAttribute( 'class', 'form-control toggle-password' )
-                          ->setAttribute( 'required', true )
-                          ->setAttribute( 'placeholder', 'New Password' );
-
-$submit = $Form->get( 'update' )
-               ->setAttribute( 'class', 'btn btn-primary' );
-
-$Form->setAttribute( 'action', $this->url( Routes::USER_UPDATE, [ 'action' => 'update' ] ) )
-     ->setAttribute( 'method', 'post' )
-     ->setAttribute( 'autocomplete', 'off' )
-     ->prepare();
-
+$Form->setAttribute( 'action', $this->url( Routes::USER_UPDATE, [ 'action' => 'update' ] ) )->prepare();
 ?>
-<div class="card">
-    <div class="card-header">
-        <h1><?= $title ?></h1>
+    <div class="container has-text-centered">
+        <div class="column is-6 is-offset-3">
+            <div class="card">
+                <header class="card-header">
+                    <h1 class="title px-3 py-3"><?= $title ?></h1>
+                </header>
+                <div class="card-content">
+					<?= $this->form()->openTag( $Form ) ?>
+                    <div class="has-text-left">
+                        <div class="field">
+							<?= $this->formLabel( $currentPassword ) ?>
+                            <div class="control">
+								<?= $this->formElement( $currentPassword ) ?>
+								<?= $this->formElementErrors()->render( $currentPassword, [ 'class' => 'help-block' ] ) ?>
+                            </div>
+                        </div>
+
+                        <div class="field">
+							<?= $this->formLabel( $newPassword ) ?>
+                            <div class="control">
+								<?= $this->formElement( $newPassword ) ?>
+								<?= $this->formElementErrors()->render( $newPassword, [ 'class' => 'help-block' ] ) ?>
+                                <small id="newPasswordHelpBlock" class="form-text text-muted">
+                                    New password must be different than the current password. Password must be 8 to 100 characters.
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="field">
+							<?= $this->formLabel( $verifyNewPassword ) ?>
+                            <div class="control">
+								<?= $this->formElement( $verifyNewPassword ) ?>
+								<?= $this->formElementErrors()->render( $verifyNewPassword, [ 'class' => 'help-block' ] ) ?>
+                                <small id="verifyNewPasswordHelpBlock" class="form-text text-muted">
+                                    Re-enter new password.
+                                </small>
+                            </div>
+                        </div>
+
+						<?= $this->partial( 'partial/togglepasswordcheckbox' ) ?>
+                    </div>
+
+					<?= $this->formElement( $Form->get( 'security' ) ) ?>
+
+                    <div class="buttons is-right">
+						<?= $this->formSubmit( $submit ) ?>
+                    </div>
+
+					<?= $this->form()->closeTag() ?>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-		<?= $this->form()->openTag( $Form ) ?>
-        <div class="form-group">
-			<?= $this->formLabel( $currentPassword ) ?>
-			<?= $this->formElement( $currentPassword ) ?>
-			<?= $this->formElementErrors()->render( $currentPassword, [ 'class' => 'help-block' ] ) ?>
-        </div>
-
-        <div class="form-group">
-			<?= $this->formLabel( $newPassword ) ?>
-			<?= $this->formElement( $newPassword ) ?>
-			<?= $this->formElementErrors()->render( $newPassword, [ 'class' => 'help-block' ] ) ?>
-            <small id="newPasswordHelpBlock" class="form-text text-muted">
-                New password must be different than the current password. Password must be 8 to 100 characters.
-            </small>
-        </div>
-
-        <div class="form-group">
-			<?= $this->formLabel( $verifyNewPassword ) ?>
-			<?= $this->formElement( $verifyNewPassword ) ?>
-			<?= $this->formElementErrors()->render( $verifyNewPassword, [ 'class' => 'help-block' ] ) ?>
-            <small id="verifyNewPasswordHelpBlock" class="form-text text-muted">
-                Re-enter new password.
-            </small>
-        </div>
-
-		<?= $this->partial( 'partial/togglepasswordcheckbox' ) ?> Show Passwords
-
-		<?= $this->formElement( $Form->get( 'security' ) ) ?>
-
-        <div class="text-right">
-			<?= $this->formSubmit( $submit ) ?>
-        </div>
-		<?= $this->form()->closeTag() ?>
-    </div>
-</div>
 <?php $this->inlineScript()->appendFile( $this->basePath( 'js/togglePassword.bundle.js' ) ) ?>

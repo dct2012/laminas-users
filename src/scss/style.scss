@@ -1,14 +1,26 @@
-@import "~bootstrap/scss/bootstrap";
+@charset "utf-8";
 
-:root {
-  --brand-color: #013755;
-}
+// Import a Google Font
+@import url('https://fonts.googleapis.com/css?family=Fira+Code:400,700');
 
-.navbar {
-  background-color: var(--brand-color);
-}
+// Set your brand colors
+$purple: #8A4D76;
+$pink: #FA7C91;
+$brown: #757763;
+$beige-light: #D0D1CD;
+$beige-lighter: #EFF0EB;
 
-.btn-primary {
-  background-color: var(--brand-color);
-  border-color: var(--brand-color);
-}
+// Update Bulma's global variables
+$family-monospace: "Fira Code", monospace;
+$family-sans-serif: $family-monospace;
+$grey-dark: $brown;
+$grey-light: $beige-lighter;
+
+$primary: $purple;
+$link: $pink;
+
+// Update some of Bulma's component variables
+$body-background-color: $beige-lighter;
+$control-border-width: 2px;
+
+@import "~bulma/bulma";

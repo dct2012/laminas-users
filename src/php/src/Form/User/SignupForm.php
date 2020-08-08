@@ -15,24 +15,54 @@ class SignupForm extends Form {
 		parent::__construct( 'user_signup' );
 
 		$this->add( [
-			'name'    => IFs::NAME,
-			'type'    => 'text',
-			'options' => [
-				'label' => 'Username:',
+			'name'       => IFs::NAME,
+			'type'       => 'text',
+			'attributes' => [
+				'id'           => IFs::NAME,
+				'class'        => 'input',
+				'required'     => 'required',
+				'placeholder'  => 'Username',
+				'autocomplete' => 'username',
+			],
+			'options'    => [
+				'label'            => 'Username:',
+				'label_attributes' => [
+					'class' => 'label',
+				],
 			],
 		] );
 		$this->add( [
-			'name'    => IFs::PASSWORD,
-			'type'    => 'password',
-			'options' => [
-				'label' => 'Password:',
+			'name'       => IFs::PASSWORD,
+			'type'       => 'password',
+			'attributes' => [
+				'id'           => IFs::PASSWORD,
+				'class'        => 'input toggle-password',
+				'required'     => 'required',
+				'placeholder'  => 'Password',
+				'autocomplete' => 'new-password',
+			],
+			'options'    => [
+				'label'            => 'Password:',
+				'label_attributes' => [
+					'class' => 'label',
+				],
 			],
 		] );
 		$this->add( [
-			'name'    => self::VERIFY_PASSWORD,
-			'type'    => 'password',
-			'options' => [
-				'label' => 'Verify Password:',
+			'name'       => self::VERIFY_PASSWORD,
+			'type'       => 'password',
+			'attributes' => [
+				'id'           => self::VERIFY_PASSWORD,
+				'class'        => 'input toggle-password',
+				'required'     => 'required',
+				'placeholder'  => 'Password',
+				'autocomplete' => 'new-password',
+			],
+			'options'    => [
+				'label'            => 'Verify Password:',
+				'label_attributes' => [
+					'class' => 'label',
+				],
 			],
 		] );
 		$this->add( new Csrf( 'security' ) );
@@ -42,6 +72,7 @@ class SignupForm extends Form {
 			'attributes' => [
 				'value' => 'Sign Up',
 				'id'    => 'signupButton',
+				'class' => 'button is-block is-info',
 			],
 		] );
 	}

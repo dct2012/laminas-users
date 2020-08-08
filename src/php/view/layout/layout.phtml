@@ -7,101 +7,34 @@ use Laminas\View\Renderer\PhpRenderer;
 
 /** @var PhpRenderer|HelperTrait $this */
 
-$title = 'Laminas Users';
+$title = 'Users';
 ?>
-<?= $this->doctype() ?>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
 	<?= $this->headTitle( $title )->setSeparator( ' - ' )->setAutoEscape( false ) ?>
 
-	<?= $this->headMeta()
-	         ->appendName( 'viewport', 'width=device-width, initial-scale=1.0' )
-	         ->appendHttpEquiv( 'X-UA-Compatible', 'IE=edge' )
-	?>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <!-- Le styles -->
-	<?= $this->headLink( [
-		'rel'  => 'shortcut icon',
-		'type' => 'image/vnd.microsoft.icon',
-		'href' => $this->basePath().'/img/favicon.ico'
-	] )
-	?>
-    <!-- Scripts -->
-	<?= $this->headScript() ?>
+    <link rel="icon" type="image/x-icon" href="<?= $this->basePath().'/img/favicon.ico' ?>"/>
 </head>
 <body>
-<nav class="navbar navbar-expand-md navbar-dark" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <a class="navbar-brand" href="<?= $this->url( 'home' ) ?>">
-                <img src="/img/icon.svg" alt="Laminas Users" height="40px"/>
-            </a>
-        </div>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-				<?php
-				$Identity = $this->identity();
-				if( $Identity ) {
-					if( $Identity instanceof User ) { ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/<?= Routes::USER ?>">User</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/<?= Routes::USER_UPDATE ?>">Change Password</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/<?= Routes::USER_DELETE ?>">Delete User</a>
-                        </li>
-					<?php } else { ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/<?= Routes::ADMIN ?>">Admin</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/<?= Routes::ADMIN_SITEMAP ?>">Sitemap</a>
-                        </li>
-					<?php }
-				} else { ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/<?= Routes::USER_LOGIN ?>">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/<?= Routes::USER_SIGNUP ?>">Sign Up</a>
-                    </li>
-				<?php } ?>
-            </ul>
-        </div>
-		<?php
-		$Identity = $this->identity();
-		if( $Identity ) { ?>
-            <form action="/<?= ( $Identity instanceof User ) ? Routes::USER_LOGOUT : Routes::ADMIN_LOGOUT; ?>" method="post">
-                <button type="submit" class="btn btn-danger">Logout</button>
-            </form>
-		<?php } ?>
-    </div>
-</nav>
-<?= $this->navigation( 'navigation' )
-         ->breadcrumbs()
-         ->setMinDepth( 0 )
-         ->setPartial( 'partial/breadcrumb' ) ?>
-<div class="container">
-	<?php
-	$FM = $this->flashMessenger()
-	           ->setMessageOpenFormat(
-		           '<div%s><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><div>'
-	           )
-	           ->setMessageSeparatorString( '</div><div>' )
-	           ->setMessageCloseString( '</div></div>' );
-	echo $FM->render( 'success', [ 'alert', 'alert-dismissible', 'alert-success' ] );
-	echo $FM->render( 'info', [ 'alert', 'alert-dismissible', 'alert-info' ] );
-	echo $FM->render( 'error', [ 'alert', 'alert-dismissible', 'alert-danger' ] );
-	echo $this->content;
-	?>
-</div>
-<?= $this->inlineScript()->appendFile( $this->basePath( 'js/bootstrap.bundle.js' ) ) ?>
+<section class="is-light is-fullheight">
+	<?= $this->partial( 'partial/navbar' ); ?>
+	<?= $this->navigation( 'navigation' )->breadcrumbs()->setMinDepth( 0 )->setPartial( 'partial/breadcrumb' ) ?>
+
+	<?php $FM = $this->flashMessenger()
+	                 ->setMessageOpenFormat( '<div class="column is-8 is-offset-2"><article%s><div class="message-header"><p></p><button class="delete is-right" aria-label="delete"></button></div><div class="message-body">' )
+	                 ->setMessageSeparatorString( '</div><div>' )
+	                 ->setMessageCloseString( '</div></article></div>' );
+	echo $FM->render( 'success', [ 'message', 'is-success' ] );
+	echo $FM->render( 'info', [ 'message', 'is-info' ] );
+	echo $FM->render( 'error', [ 'message', 'is-danger' ] ); ?>
+	<?= $this->content ?>
+</section>
+
+<?= $this->inlineScript()->appendFile( $this->basePath( 'js/index.bundle.js' ) ) ?>
 </body>
 </html>

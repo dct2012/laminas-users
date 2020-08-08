@@ -12,53 +12,54 @@ use App\Model\Values\IdentityFields as IFs;
 $title = 'User Login';
 $this->headTitle( $title );
 
-$name = $Form->get( IFs::NAME )
-             ->setAttribute( 'class', 'form-control' )
-             ->setAttribute( 'required', true )
-             ->setAttribute( 'placeholder', 'Username' );
+$name     = $Form->get( IFs::NAME );
+$password = $Form->get( IFs::PASSWORD );
+$Submit   = $Form->get( 'login' );
 
-$password = $Form->get( IFs::PASSWORD )
-                 ->setAttribute( 'class', 'form-control toggle-password' )
-                 ->setAttribute( 'required', true )
-                 ->setAttribute( 'placeholder', 'Password' );
-
-$Submit = $Form->get( 'login' )
-               ->setAttribute( 'class', 'btn btn-primary' );
-
-$Form->setAttribute( 'action', $this->url( Routes::USER_LOGIN, [ 'action' => 'login' ] ) )
-     ->setAttribute( 'method', 'post' )
-     ->setAttribute( 'autocomplete', 'off' )
-     ->prepare();
+$Form->setAttribute( 'action', $this->url( Routes::USER_LOGIN, [ 'action' => 'login' ] ) )->prepare();
 ?>
-<div class="card">
-    <div class="card-header">
-        <h1><?= $title ?></h1>
-    </div>
-    <div class="card-body">
-		<?= $this->form()->openTag( $Form ) ?>
-        <div class="form-group">
-			<?= $this->formLabel( $name ) ?>
-			<?= $this->formElement( $name ) ?>
-			<?= $this->formElementErrors()->render( $name, [ 'class' => 'help-block' ] ) ?>
+    <div class="container has-text-centered">
+        <div class="column is-6 is-offset-3">
+            <div class="card">
+                <header class="card-header">
+                    <h1 class="title px-3 py-3"><?= $title ?></h1>
+                </header>
+                <div class="card-content">
+					<?= $this->form()->openTag( $Form ) ?>
+                    <div class="has-text-left">
+                        <div class="field">
+							<?= $this->formLabel( $name ) ?>
+                            <div class="control">
+								<?= $this->formElement( $name ) ?>
+								<?= $this->formElementErrors()->render( $name, [ 'class' => 'help-block' ] ) ?>
+                            </div>
+                        </div>
+
+                        <div class="field">
+							<?= $this->formLabel( $password ) ?>
+                            <div class="control">
+								<?= $this->formElement( $password ) ?>
+								<?= $this->formElementErrors()->render( $password, [ 'class' => 'help-block' ] ) ?>
+                            </div>
+                        </div>
+
+						<?= $this->partial( 'partial/togglepasswordcheckbox' ) ?>
+                    </div>
+
+					<?= $this->formElement( $Form->get( 'security' ) ) ?>
+
+                    <div class="buttons is-right">
+						<?= $this->formSubmit( $Submit ) ?>
+                    </div>
+
+					<?= $this->form()->closeTag() ?>
+                </div>
+                <footer class="card-footer has-text-left">
+                    <div class="py-3 px-3">
+                        Don't have an account? <a href="/<?= Routes::USER_SIGNUP ?>">Sign up</a>.
+                    </div>
+                </footer>
+            </div>
         </div>
-
-        <div class="form-group">
-			<?= $this->formLabel( $password ) ?>
-			<?= $this->formElement( $password ) ?>
-			<?= $this->formElementErrors()->render( $password, [ 'class' => 'help-block' ] ) ?>
-        </div>
-
-		<?= $this->partial( 'partial/togglepasswordcheckbox' ) ?> Show Password
-
-		<?= $this->formElement( $Form->get( 'security' ) ) ?>
-
-        <div class="text-right">
-			<?= $this->formSubmit( $Submit ) ?>
-        </div>
-		<?= $this->form()->closeTag() ?>
     </div>
-    <div class="card-footer text-muted">
-        Don't have an account? <a href="/<?= Routes::USER_SIGNUP ?>">Sign up</a>.
-    </div>
-</div>
 <?php $this->inlineScript()->appendFile( $this->basePath( 'js/togglePassword.bundle.js' ) ) ?>

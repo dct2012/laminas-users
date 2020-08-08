@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        bootstrap: './src/js/src/bootstrap.js',
+        index: './src/js/src/index.js',
         highlightSitemap: './src/js/src/highlightSitemap.js',
         togglePassword: './src/js/src/togglePassword.js',
     },

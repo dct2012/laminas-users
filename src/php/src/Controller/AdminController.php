@@ -201,7 +201,7 @@ class AdminController extends AbstractController {
 		return $this->redirect()->toRoute( Routes::ADMIN_LOGIN );
 	}
 
-	/** @return Response|ViewModel */
+	/** @return Response|ViewModel|array */
 	public function infoAction() {
 		try {
 			$this->assertLoggedIn( new RedirectAdminLoginException( 'You have to be logged in to view admin info!' ) )
@@ -211,11 +211,11 @@ class AdminController extends AbstractController {
 			$Admin = $this->getAuthenticationService()->getIdentity();
 			$this->createAdminPageVisit( $Admin, Routes::ADMIN );
 
-			return new ViewModel( [
+			return [
 				'Form'       => $this->getForm( InfoForm::class ),
 				'Admin'      => $Admin,
-				'AdminLogin' => $this->getLastAdminLogin( $Admin )
-			] );
+				'AdminLogin' => $this->getLastAdminLogin( $Admin ),
+			];
 		} catch( Exception $e ) {
 			$this->flashMessengerError( $e->getMessage() );
 

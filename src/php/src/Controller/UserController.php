@@ -41,6 +41,25 @@ class UserController extends AbstractController {
 	}
 
 	/**
+	 * @param string $name
+	 * @param string $password
+	 *
+	 * @return User
+	 */
+	protected function assertIdentityAndUser( string $name, string $password ): User {
+		$Identity = $this->IdentityHelper->read( new Identity( $name, $password ) );
+		if( empty( $Identity ) ) {
+			throw new RefreshException( "Identity with name, '{$name}', does not exist!" );
+		}
+		$User = $this->UserHelper->read( new User( $Identity ), [ UFs::IDENTITY_ID => $Identity->getId() ] );
+		if( empty( $User ) ) {
+			throw new RefreshException( "User with name, '{$name}', does not exist!" );
+		}
+
+		return $User;
+	}
+
+	/**
 	 * @return $this
 	 * @throws RedirectAdminException
 	 */
@@ -127,8 +146,7 @@ class UserController extends AbstractController {
 		$password = $data[ IFs::PASSWORD ];
 
 		// ensure Identity and User exist
-		$Identity = $this->IdentityHelper->read( new Identity( $name, $password ) );
-		$User     = $this->UserHelper->read( new User( $Identity ), [ UFs::IDENTITY_ID => $Identity->getId() ] );
+		$User = $this->assertIdentityAndUser( $name, $password );
 
 		// ensure credentials given are valid
 		$this->authenticateLogin( $name, $password );
@@ -219,7 +237,7 @@ class UserController extends AbstractController {
 			return new ViewModel( [
 				'Form'      => $this->getForm( InfoForm::class ),
 				'User'      => $User,
-				'UserLogin' => $this->getLastUserLogin( $User )
+				'UserLogin' => $this->getLastUserLogin( $User ),
 			] );
 		} catch( Exception $e ) {
 			$this->getFlashMessenger()->addErrorMessage( $e->getMessage() );

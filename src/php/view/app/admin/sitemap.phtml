@@ -5,12 +5,10 @@ use Laminas\View\Renderer\PhpRenderer;
 
 /** @var PhpRenderer|HelperTrait $this */
 
-$this->headTitle( 'Sitemap' );
+$this->headTitle( 'Sitemap' ); ?>
 
-?>
-<pre>
-    <code id="sitemap_code_block" lang="xml">
-        <?= htmlspecialchars( $this->navigation( 'navigation' )->sitemap()->setFormatOutput( true ) ); ?>
-    </code>
-</pre>
+<pre><code id="sitemap_code_block" lang="xml">
+    <?= htmlspecialchars( $this->navigation( 'navigation' )->sitemap()->setFormatOutput( true ) ); ?>
+</code></pre>
+
 <?= $this->inlineScript()->prependFile( $this->basePath( 'js/highlightSitemap.bundle.js' ) ) ?>

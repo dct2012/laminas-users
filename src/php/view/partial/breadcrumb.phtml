@@ -1,25 +1,11 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-		<?php
-		// iterate through the pages
-		foreach( $this->pages as $key => $page ): ?>
-			<?php
-			// if this isn't the last page, add a link and the separator:
-			if( $key < count( $this->pages ) - 1 ):
-				?>
-                <li class="breadcrumb-item">
-                    <a href="<?= $page->getHref() ?>">
-						<?= $page->getLabel() ?>
-                    </a>
-                </li>
-			<?php
-			// otherwise, output the name only:
-			else:
-				?>
-                <li class="breadcrumb-item active" aria-current="page">
-					<?= $page->getLabel() ?>
-                </li>
-			<?php endif; ?>
-		<?php endforeach; ?>
-    </ol>
+<nav class="breadcrumb has-succeeds-separator" aria-label="breadcrumbs">
+    <ul><?php
+		foreach( $this->pages as $key => $page ) {
+			if( $key < count( $this->pages ) - 1 ) { ?>
+                <li><a href="<?= $page->getHref() ?>"><?= $page->getLabel() ?></a></li>
+			<?php } else { ?>
+                <li class="is-active"><a href="<?= $page->getHref() ?>" aria-current="page"><?= $page->getLabel() ?></a></li>
+			<?php }
+		} ?>
+    </ul>
 </nav>

@@ -137,17 +137,17 @@ return [
 	],
 	'service_manager' => [
 		'factories' => [
-			AuthenticationServiceInterface::class => AuthenticationServiceFactory::class,
-			AuthStorageInterface::class           => AuthenticationStorageFactory::class,
-			AdminHelper::class                    => AdminHelperFactory::class,
-			AdminLoginHelper::class               => AdminLoginHelperFactory::class,
-			AdminPageVisitHelper::class           => AdminPageVisitHelperFactory::class,
-			IdentityHelper::class                 => IdentityHelperFactory::class,
-			LoginHelper::class                    => LoginHelperFactory::class,
-			PageVisitHelper::class                => PageVisitHelperFactory::class,
 			UserHelper::class                     => UserHelperFactory::class,
+			AdminHelper::class                    => AdminHelperFactory::class,
+			LoginHelper::class                    => LoginHelperFactory::class,
+			IdentityHelper::class                 => IdentityHelperFactory::class,
+			PageVisitHelper::class                => PageVisitHelperFactory::class,
 			UserLoginHelper::class                => UserLoginHelperFactory::class,
+			AdminLoginHelper::class               => AdminLoginHelperFactory::class,
 			UserPageVisitHelper::class            => UserPageVisitHelperFactory::class,
+			AdminPageVisitHelper::class           => AdminPageVisitHelperFactory::class,
+			AuthStorageInterface::class           => AuthenticationStorageFactory::class,
+			AuthenticationServiceInterface::class => AuthenticationServiceFactory::class,
 		],
 	],
 	'controllers'     => [
@@ -164,6 +164,7 @@ return [
 		'not_found_template'       => 'error/404',
 		'exception_template'       => 'error/index',
 		'template_map'             => [
+			'layout/admin'    => __DIR__.'/../view/layout/admin.phtml',
 			'layout/layout'   => __DIR__.'/../view/layout/layout.phtml',
 			'app/index/index' => __DIR__.'/../view/app/index/index.phtml',
 			'error/404'       => __DIR__.'/../view/error/404.phtml',
@@ -182,14 +183,14 @@ return [
 					[
 						'label'  => 'Login',
 						'route'  => Routes::ADMIN_LOGIN,
-						'action' => 'login'
+						'action' => 'login',
 					],
 					[
 						'label'  => 'Sitemap',
 						'route'  => Routes::ADMIN_SITEMAP,
-						'action' => 'sitemap'
-					]
-				]
+						'action' => 'sitemap',
+					],
+				],
 			],
 			[
 				'label' => 'User',

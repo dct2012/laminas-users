@@ -16,6 +16,7 @@ class LogoutForm extends Form {
 			'attributes' => [
 				'value' => 'logout',
 				'id'    => 'logoutButton',
+				'class' => 'button is-block is-danger',
 			],
 		] );
 	}
