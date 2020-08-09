@@ -164,7 +164,6 @@ return [
 		'not_found_template'       => 'error/404',
 		'exception_template'       => 'error/index',
 		'template_map'             => [
-			'layout/admin'    => __DIR__.'/../view/layout/admin.phtml',
 			'layout/layout'   => __DIR__.'/../view/layout/layout.phtml',
 			'app/index/index' => __DIR__.'/../view/app/index/index.phtml',
 			'error/404'       => __DIR__.'/../view/error/404.phtml',

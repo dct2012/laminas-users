@@ -20,11 +20,10 @@ $title = 'Users';
 
     <link rel="icon" type="image/x-icon" href="<?= $this->basePath().'/img/favicon.ico' ?>"/>
 </head>
-<body>
-<section class="is-light is-fullheight">
-	<?= $this->partial( 'partial/navbar' ); ?>
-	<?= $this->navigation( 'navigation' )->breadcrumbs()->setMinDepth( 0 )->setPartial( 'partial/breadcrumb' ) ?>
-
+<body class="is-light is-fullheight">
+<?= $this->partial( 'partial/navbar' ); ?>
+<?= $this->navigation( 'navigation' )->breadcrumbs()->setMinDepth( 0 )->setPartial( 'partial/breadcrumb' ) ?>
+<section>
 	<?php $FM = $this->flashMessenger()
 	                 ->setMessageOpenFormat( '<div class="column is-8 is-offset-2"><article%s><div class="message-header"><p></p><button class="delete is-right" aria-label="delete"></button></div><div class="message-body">' )
 	                 ->setMessageSeparatorString( '</div><div>' )

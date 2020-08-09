@@ -62,18 +62,18 @@ $Form->prepare();
 							<?= $this->formElementErrors()->render( $createdOn, [ 'class' => 'help-block' ] ) ?>
                         </div>
                     </div>
-                </div>
-				<?= $this->form()->closeTag() ?>
+					<?= $this->form()->closeTag() ?>
 
-				<?php if( !empty( $UserLogin ) ) { ?>
-                    <hr>
-                    <div class="field">
-                        <label for="lastLogin" class="label">Last Login:</label>
-                        <div class="control">
-                            <input type="text" id="lastLogin" name="lastLogin" class="form-control" placeholder="Chrome" readonly="readonly" value="<?= $UserLogin->getLoginTime() ?> to <?= $UserLogin->getLogoutTime() ?>">
+					<?php if( !empty( $UserLogin ) ) { ?>
+                        <hr>
+                        <div class="field">
+                            <label for="lastLogin" class="label">Last Login:</label>
+                            <div class="control">
+                                <input type="text" id="lastLogin" name="lastLogin" class="input" placeholder="Chrome" disabled="disabled" value="<?= $UserLogin->getLoginTime() ?> to <?= $UserLogin->getLogoutTime() ?>">
+                            </div>
                         </div>
-                    </div>
-				<?php } ?>
+					<?php } ?>
+                </div>
             </div>
             <footer class="card-footer columns">
                 <div class="column is-left">

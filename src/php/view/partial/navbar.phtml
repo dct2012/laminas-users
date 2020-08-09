@@ -1,35 +1,39 @@
+<?php
+
+use App\Model\User;
+use App\Enum\Routes; ?>
 <nav class="navbar">
-    <div class="container">
-        <div class="navbar-brand">
-            <a class="navbar-item">
-                <img src="/img/icon.svg" alt="Logo">
-            </a>
-            <span class="navbar-burger burger" data-target="navbarMenuHeroA">
+    <div class="navbar-brand">
+        <a class="navbar-item">
+            <img src="/img/icon.svg" alt="Logo">
+        </a>
+        <span class="navbar-burger burger" data-target="navbarMenuHeroA">
             <span></span>
             <span></span>
             <span></span>
           </span>
-        </div>
-        <div id="navbarMenuHeroA" class="navbar-menu">
-            <div class="navbar-end">
-                <a class="navbar-item is-active">
-                    Home
-                </a>
-                <a class="navbar-item">
-                    Examples
-                </a>
-                <a class="navbar-item">
-                    Documentation
-                </a>
-                <span class="navbar-item">
-              <a class="button is-primary is-inverted">
-                <span class="icon">
-                  <i class="fab fa-github"></i>
-                </span>
-                <span>Download</span>
-              </a>
-            </span>
-            </div>
+    </div>
+    <div id="navbarMenuHeroA" class="navbar-menu">
+        <div class="navbar-end">
+			<?php
+			$Identity = $this->identity();
+			if( $Identity ) {
+				if( $Identity instanceof User ) { ?>
+                    <a class="navbar-item" href="/<?= Routes::USER ?>">User</a>
+                    <a class="navbar-item" href="/<?= Routes::USER_UPDATE ?>">Change Password</a>
+                    <a class="navbar-item" href="/<?= Routes::USER_DELETE ?>">Delete User</a>
+				<?php } else { ?>
+                    <a class="navbar-item" href="/<?= Routes::ADMIN ?>">Admin</a>
+                    <a class="navbar-item" href="/<?= Routes::ADMIN_SITEMAP ?>">Sitemap</a>
+				<?php } ?>
+
+                <form class="navbar-item" action="/<?= ( $Identity instanceof User ) ? Routes::USER_LOGOUT : Routes::ADMIN_LOGOUT; ?>" method="post">
+                    <button type="submit" class="button is-primary">Logout</button>
+                </form>
+			<? } else { ?>
+                <a class="navbar-item" href="/<?= Routes::USER_LOGIN ?>">Login</a>
+                <a class="navbar-item" href="/<?= Routes::USER_SIGNUP ?>">Sign Up</a>
+			<?php } ?>
         </div>
     </div>
 </nav>
